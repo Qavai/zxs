@@ -1,0 +1,1262 @@
+;Общие определения, макросы...
+
+ofs             equ offset
+bptr            equ byte ptr
+wptr            equ word ptr
+dwptr           equ dword ptr
+m		equ mask
+
+trap macro
+local Next
+ jmp Next
+ db '@@@'
+Next:
+endm
+
+LenStack        = 528           ;Байт (ещё менять в ключах LINKa)
+TypeCpu         = 5             ;3-386, 4-486, 5-Pentium
+
+global	DoNewCommand:near
+global	CmdDD:abs, CmdDD_CB:abs, Cmd0:abs, CmdFD:abs
+global	CmdFD_CB:abs, CmdED:abs, CmdCB:abs
+
+global	LdBL_portCX:proc
+global	StoreBL_portCX:proc
+global	Tacts:abs
+
+endc macro
+ jmp DoNewCommand
+endm
+
+tact macro Tacts
+ mov cx,Tacts
+endm
+
+getadr_i macro
+ movsx bx,bptr [si]
+ inc si
+ add bx,cx
+endm
+
+Z80Registers    struc   ;-----------------------------------------------------
+ rAF    label word      ;■
+ rA     label byte
+        db ?
+ rF     label byte
+        db ?
+
+ rBC    label word      ;■
+ rC     label byte
+        db ?
+ rB     label byte
+        db ?
+
+ rHL    label word      ;■
+ rL     label byte
+        db ?
+ rH     label byte
+        db ?
+
+ rPC    dw      ?       ;■
+ rSP    dw      ?       ;■
+
+ rIR    label word      ;■
+ rR     label byte
+        db ?
+ rI     label byte
+        db ?
+
+ rDE    label word      ;■
+ rE     label byte
+        db ?
+ rD     label byte
+        db ?
+
+ rBC_   dw      ?       ;■
+ rDE_   dw      ?       ;■
+ rHL_   dw      ?       ;■
+ rAF_   dw      ?       ;■      ;Альтернативные
+
+ rIY    label word      ;■
+ rYL    label byte
+        db ?
+ rYH    label byte
+        db ?
+
+ rIX    label word      ;■
+ rXL    label byte
+        db ?
+ rXH    label byte
+        db ?
+Z80Registers    ends    ;-----------------------------------------------------
+
+DataVar struc
+ Z80regs Z80Registers <?>	;■
+ fINT   db ?			;■ Состояние прерываний INT (0-запрещено,1-р.)
+ fINT_  db ?			;■ Прежнее состояние INT (нужно для NMI)
+ fIM    db ?			;■ IM0,IM1,IM2 - режим прерываний INT
+ fHALT	db ?			;■ 1-HALT работает,0-не работает
+ pfeo   db ?			;■ Текущее выходное значение порта 254
+DataVar ends
+
+fl0_tag	record IntGo:1,FlashOn:1
+flags	record fS:1,fZ:1,f5:1,fH:1,f3:1,fPV:1,fN:1,fC:1
+
+;Команды BIT,RES,SET для индексной адресации (IX+byte),(IY+byte)
+;Для набора DD_CB и FD_CB
+bit_i macro numb1:req
+ and ah,3Dh		;;Подготовка для ветви "Бит равен 1" Z=0,S=0,N=0,P-,C-
+ or ah,10h		;;H=1
+ test bptr [bx],1 shl numb1
+ jnz DoNewCommand
+ or ah,40h		;;Z=1; Возможно P=1, а если=1, то P=0. (;?)
+ jmp DoNewCommand
+endm
+
+res_i_reg macro numb1:req,numb2:req
+ mov ch,[bx]
+ and ch,not(1 shl numb1)
+ test bh,192
+ mov [bp.&numb2&],ch
+ jz DoNewCommand
+ mov [bx],ch
+ jmp DoNewCommand
+endm
+
+res_i macro numb1:req
+ mov ch,[bx]
+ and ch,not(1 shl numb1)
+ test bh,192
+ jz DoNewCommand
+ mov [bx],ch
+ jmp DoNewCommand
+endm
+
+res_i_a macro numb1:req
+ mov ch,[bx]
+ and ch,not(1 shl numb1)
+ test bh,192
+ mov al,ch
+ jz DoNewCommand
+ mov [bx],ch
+ jmp DoNewCommand
+endm
+
+set_i_reg macro numb1:req,numb2:req
+ mov ch,[bx]
+ or ch,1 shl numb1
+ test bh,192
+ mov [bp.&numb2&],ch
+ jz DoNewCommand
+ mov [bx],ch
+ jmp DoNewCommand
+endm
+
+set_i macro numb1:req
+ mov ch,[bx]
+ or ch,1 shl numb1
+ test bh,192
+ jz DoNewCommand
+ mov [bx],ch
+ jmp DoNewCommand
+endm
+
+set_i_a macro numb1:req
+ mov ch,[bx]
+ or ch,1 shl numb1
+ test bh,192
+ mov al,ch
+ jz DoNewCommand
+ mov [bx],ch
+ jmp DoNewCommand
+endm
+
+;Команды BIT,RES,SET
+;Для набора CB
+bit_reg macro numb1:req,reg:req
+ and ah,3Dh		;;Подготовка для ветви "Бит равен 1" Z=0,S=0,N=0,P-,C-
+ tact 8
+ or ah,10h		;;H=1
+ test bptr [bp.&reg&],1 shl numb1
+ jnz DoNewCommand
+ or ah,40h		;;Z=1; Возможно P=1, а если=1, то P=0. (;?)
+ jmp DoNewCommand
+endm
+
+bit_hl macro numb1:req
+ and ah,3Dh		;;Подготовка для ветви "Бит равен 1" Z=0,S=0,N=0,P-,C-
+ mov bx,[bp.rHL]
+ or ah,10h		;;H=1
+ tact 12
+ test bptr [bx],1 shl numb1
+ jnz DoNewCommand
+ or ah,40h		;;Z=1; Возможно P=1, а если=1, то P=0. (;?)
+ jmp DoNewCommand
+endm
+
+bit_a macro numb1:req
+ and ah,3Dh		;;Подготовка для ветви "Бит равен 1" Z=0,S=0,N=0,P-,C-
+ tact 8
+ or ah,10h		;;H=1
+ test al,1 shl numb1
+ jnz DoNewCommand
+ or ah,40h		;;Z=1; Возможно P=1, а если=1, то P=0. (;?)
+ jmp DoNewCommand
+endm
+
+res_reg macro numb1:req,reg:req
+ and [bp.&reg&],not(1 shl numb1)
+ tact 8
+ jmp DoNewCommand
+endm
+
+res_hl macro numb1:req
+ mov bx,[bp.rHL]
+ tact 15
+ test bh,192
+ jz DoNewCommand
+ and bptr [bx],not(1 shl numb1)
+ jmp DoNewCommand
+endm
+
+res_a macro numb1:req
+ and al,not(1 shl numb1)
+ tact 8
+ jmp DoNewCommand
+endm
+
+set_reg macro numb1:req,reg:req
+ or [bp.&reg&],1 shl numb1
+ tact 8
+ jmp DoNewCommand
+endm
+
+set_hl macro numb1:req
+ mov bx,[bp.rHL]
+ tact 15
+ test bh,192
+ jz DoNewCommand
+ or bptr [bx],1 shl numb1
+ jmp DoNewCommand
+endm
+
+set_a macro numb1:req
+ or al,1 shl numb1
+ tact 8
+ jmp DoNewCommand
+endm
+
+global n0	:near
+global n1	:near
+global n2	:near
+global n3	:near
+global n4	:near
+global n5	:near
+global n6	:near
+global n7	:near
+global n8	:near
+global n9	:near
+global nA	:near
+global nB	:near
+global nC	:near
+global nD	:near
+global nE_	:near
+global nF	:near
+global n10	:near
+global n11	:near
+global n12	:near
+global n13	:near
+global n14	:near
+global n15	:near
+global n16	:near
+global n17	:near
+global n18	:near
+global n19	:near
+global n1A	:near
+global n1B	:near
+global n1C	:near
+global n1D	:near
+global n1E	:near
+global n1F	:near
+global n20	:near
+global n21	:near
+global n22	:near
+global n23	:near
+global n24	:near
+global n25	:near
+global n26	:near
+global n27	:near
+global n28	:near
+global n29	:near
+global n2A	:near
+global n2B	:near
+global n2C	:near
+global n2D	:near
+global n2E	:near
+global n2F	:near
+global n30	:near
+global n31	:near
+global n32	:near
+global n33	:near
+global n34	:near
+global n35	:near
+global n36	:near
+global n37	:near
+global n38	:near
+global n39	:near
+global n3A	:near
+global n3B	:near
+global n3C	:near
+global n3D	:near
+global n3E	:near
+global n3F	:near
+global n40	:near
+global n41	:near
+global n42	:near
+global n43	:near
+global n44	:near
+global n45	:near
+global n46	:near
+global n47	:near
+global n48	:near
+global n49	:near
+global n4A	:near
+global n4B	:near
+global n4C	:near
+global n4D	:near
+global n4E	:near
+global n4F	:near
+global n50	:near
+global n51	:near
+global n52	:near
+global n53	:near
+global n54	:near
+global n55	:near
+global n56	:near
+global n57	:near
+global n58	:near
+global n59	:near
+global n5A	:near
+global n5B	:near
+global n5C	:near
+global n5D	:near
+global n5E	:near
+global n5F	:near
+global n60	:near
+global n61	:near
+global n62	:near
+global n63	:near
+global n64	:near
+global n65	:near
+global n66	:near
+global n67	:near
+global n68	:near
+global n69	:near
+global n6A	:near
+global n6B	:near
+global n6C	:near
+global n6D	:near
+global n6E	:near
+global n6F	:near
+global n70	:near
+global n71	:near
+global n72	:near
+global n73	:near
+global n74	:near
+global n75	:near
+global n76	:near
+global n77	:near
+global n78	:near
+global n79	:near
+global n7A	:near
+global n7B	:near
+global n7C	:near
+global n7D	:near
+global n7E	:near
+global n7F	:near
+global n80	:near
+global n81	:near
+global n82	:near
+global n83	:near
+global n84	:near
+global n85	:near
+global n86	:near
+global n87	:near
+global n88	:near
+global n89	:near
+global n8A	:near
+global n8B	:near
+global n8C	:near
+global n8D	:near
+global n8E	:near
+global n8F	:near
+global n90	:near
+global n91	:near
+global n92	:near
+global n93	:near
+global n94	:near
+global n95	:near
+global n96	:near
+global n97	:near
+global n98	:near
+global n99	:near
+global n9A	:near
+global n9B	:near
+global n9C	:near
+global n9D	:near
+global n9E	:near
+global n9F	:near
+global nA0	:near
+global nA1	:near
+global nA2	:near
+global nA3	:near
+global nA4	:near
+global nA5	:near
+global nA6	:near
+global nA7	:near
+global nA8	:near
+global nA9	:near
+global nAA	:near
+global nAB	:near
+global nAC	:near
+global nAD	:near
+global nAE	:near
+global nAF	:near
+global nB0	:near
+global nB1	:near
+global nB2	:near
+global nB3	:near
+global nB4	:near
+global nB5	:near
+global nB6	:near
+global nB7	:near
+global nB8	:near
+global nB9	:near
+global nBA	:near
+global nBB	:near
+global nBC	:near
+global nBD	:near
+global nBE	:near
+global nBF	:near
+global nC0	:near
+global nC1	:near
+global nC2	:near
+global nC3	:near
+global nC4	:near
+global nC5	:near
+global nC6	:near
+global nC7	:near
+global nC8	:near
+global nC9	:near
+global nCA	:near
+global nCB	:near
+global nCC	:near
+global nCD	:near
+global nCE	:near
+global nCF	:near
+global nD0	:near
+global nD1	:near
+global nD2	:near
+global nD3	:near
+global nD4	:near
+global nD5	:near
+global nD6	:near
+global nD7	:near
+global nD8	:near
+global nD9	:near
+global nDA	:near
+global nDB	:near
+global nDC	:near
+global nDD	:near
+global nDE	:near
+global nDF	:near
+global nE0	:near
+global nE1	:near
+global nE2	:near
+global nE3	:near
+global nE4	:near
+global nE5	:near
+global nE6	:near
+global nE7	:near
+global nE8	:near
+global nE9	:near
+global nEA	:near
+global nEB	:near
+global nEC	:near
+global nED	:near
+global nEE	:near
+global nEF	:near
+global nF0	:near
+global nF1	:near
+global nF2	:near
+global nF3	:near
+global nF4	:near
+global nF5	:near
+global nF6	:near
+global nF7	:near
+global nF8	:near
+global nF9	:near
+global nFA	:near
+global nFB	:near
+global nFC	:near
+global nFD	:near
+global nFE	:near
+global nFF	:near
+
+global nDD_9	:near
+global nDD_19	:near
+global nDD_21	:near
+global nDD_22	:near
+global nDD_23	:near
+global nDD_24	:near
+global nDD_25	:near
+global nDD_26	:near
+global nDD_29	:near
+global nDD_2A	:near
+global nDD_2B	:near
+global nDD_2C	:near
+global nDD_2D	:near
+global nDD_2E	:near
+global nDD_34	:near
+global nDD_35	:near
+global nDD_36	:near
+global nDD_39	:near
+global nDD_44	:near
+global nDD_45	:near
+global nDD_46	:near
+global nDD_4C	:near
+global nDD_4D	:near
+global nDD_4E	:near
+global nDD_54	:near
+global nDD_55	:near
+global nDD_56	:near
+global nDD_5C	:near
+global nDD_5D	:near
+global nDD_5E	:near
+global nDD_60	:near
+global nDD_61	:near
+global nDD_62	:near
+global nDD_63	:near
+global nDD_64	:near
+global nDD_65	:near
+global nDD_66	:near
+global nDD_67	:near
+global nDD_68	:near
+global nDD_69	:near
+global nDD_6A	:near
+global nDD_6B	:near
+global nDD_6C	:near
+global nDD_6D	:near
+global nDD_6E	:near
+global nDD_6F	:near
+global nDD_70	:near
+global nDD_71	:near
+global nDD_72	:near
+global nDD_73	:near
+global nDD_74	:near
+global nDD_75	:near
+global nDD_77	:near
+global nDD_7C	:near
+global nDD_7D	:near
+global nDD_7E	:near
+global nDD_84	:near
+global nDD_85	:near
+global nDD_86	:near
+global nDD_8C	:near
+global nDD_8D	:near
+global nDD_8E	:near
+global nDD_94	:near
+global nDD_95	:near
+global nDD_96	:near
+global nDD_9C	:near
+global nDD_9D	:near
+global nDD_9E	:near
+global nDD_A4	:near
+global nDD_A5	:near
+global nDD_A6	:near
+global nDD_AC	:near
+global nDD_AD	:near
+global nDD_AE	:near
+global nDD_B4	:near
+global nDD_B5	:near
+global nDD_B6	:near
+global nDD_BC	:near
+global nDD_BD	:near
+global nDD_BE	:near
+global nDD_CB	:near
+global nDD_DD	:near
+global nDD_E1	:near
+global nDD_E3	:near
+global nDD_E5	:near
+global nDD_E9	:near
+global nDD_ED	:near
+global nDD_F9	:near
+global nDD_FD	:near
+
+global nFD_9	:near
+global nFD_19	:near
+global nFD_21	:near
+global nFD_22	:near
+global nFD_23	:near
+global nFD_24	:near
+global nFD_25	:near
+global nFD_26	:near
+global nFD_29	:near
+global nFD_2A	:near
+global nFD_2B	:near
+global nFD_2C	:near
+global nFD_2D	:near
+global nFD_2E	:near
+global nFD_34	:near
+global nFD_35	:near
+global nFD_36	:near
+global nFD_39	:near
+global nFD_44	:near
+global nFD_45	:near
+global nFD_46	:near
+global nFD_4C	:near
+global nFD_4D	:near
+global nFD_4E	:near
+global nFD_54	:near
+global nFD_55	:near
+global nFD_56	:near
+global nFD_5C	:near
+global nFD_5D	:near
+global nFD_5E	:near
+global nFD_60	:near
+global nFD_61	:near
+global nFD_62	:near
+global nFD_63	:near
+global nFD_64	:near
+global nFD_65	:near
+global nFD_66	:near
+global nFD_67	:near
+global nFD_68	:near
+global nFD_69	:near
+global nFD_6A	:near
+global nFD_6B	:near
+global nFD_6C	:near
+global nFD_6D	:near
+global nFD_6E	:near
+global nFD_6F	:near
+global nFD_70	:near
+global nFD_71	:near
+global nFD_72	:near
+global nFD_73	:near
+global nFD_74	:near
+global nFD_75	:near
+global nFD_77	:near
+global nFD_7C	:near
+global nFD_7D	:near
+global nFD_7E	:near
+global nFD_84	:near
+global nFD_85	:near
+global nFD_86	:near
+global nFD_8C	:near
+global nFD_8D	:near
+global nFD_8E	:near
+global nFD_94	:near
+global nFD_95	:near
+global nFD_96	:near
+global nFD_9C	:near
+global nFD_9D	:near
+global nFD_9E	:near
+global nFD_A4	:near
+global nFD_A5	:near
+global nFD_A6	:near
+global nFD_AC	:near
+global nFD_AD	:near
+global nFD_AE	:near
+global nFD_B4	:near
+global nFD_B5	:near
+global nFD_B6	:near
+global nFD_BC	:near
+global nFD_BD	:near
+global nFD_BE	:near
+global nFD_CB	:near
+global nFD_DD	:near
+global nFD_E1	:near
+global nFD_E3	:near
+global nFD_E5	:near
+global nFD_E9	:near
+global nFD_ED	:near
+global nFD_F9	:near
+global nFD_FD	:near
+
+global nCB_0 :near
+global nCB_1 :near
+global nCB_2 :near
+global nCB_3 :near
+global nCB_4 :near
+global nCB_5 :near
+global nCB_6 :near
+global nCB_7 :near
+global nCB_8 :near
+global nCB_9 :near
+global nCB_A :near
+global nCB_B :near
+global nCB_C :near
+global nCB_D :near
+global nCB_E :near
+global nCB_F :near
+global nCB_10 :near
+global nCB_11 :near
+global nCB_12 :near
+global nCB_13 :near
+global nCB_14 :near
+global nCB_15 :near
+global nCB_16 :near
+global nCB_17 :near
+global nCB_18 :near
+global nCB_19 :near
+global nCB_1A :near
+global nCB_1B :near
+global nCB_1C :near
+global nCB_1D :near
+global nCB_1E :near
+global nCB_1F :near
+global nCB_20 :near
+global nCB_21 :near
+global nCB_22 :near
+global nCB_23 :near
+global nCB_24 :near
+global nCB_25 :near
+global nCB_26 :near
+global nCB_27 :near
+global nCB_28 :near
+global nCB_29 :near
+global nCB_2A :near
+global nCB_2B :near
+global nCB_2C :near
+global nCB_2D :near
+global nCB_2E :near
+global nCB_2F :near
+global nCB_30 :near
+global nCB_31 :near
+global nCB_32 :near
+global nCB_33 :near
+global nCB_34 :near
+global nCB_35 :near
+global nCB_36 :near
+global nCB_37 :near
+global nCB_38 :near
+global nCB_39 :near
+global nCB_3A :near
+global nCB_3B :near
+global nCB_3C :near
+global nCB_3D :near
+global nCB_3E :near
+global nCB_3F :near
+global nCB_40 :near
+global nCB_41 :near
+global nCB_42 :near
+global nCB_43 :near
+global nCB_44 :near
+global nCB_45 :near
+global nCB_46 :near
+global nCB_47 :near
+global nCB_48 :near
+global nCB_49 :near
+global nCB_4A :near
+global nCB_4B :near
+global nCB_4C :near
+global nCB_4D :near
+global nCB_4E :near
+global nCB_4F :near
+global nCB_50 :near
+global nCB_51 :near
+global nCB_52 :near
+global nCB_53 :near
+global nCB_54 :near
+global nCB_55 :near
+global nCB_56 :near
+global nCB_57 :near
+global nCB_58 :near
+global nCB_59 :near
+global nCB_5A :near
+global nCB_5B :near
+global nCB_5C :near
+global nCB_5D :near
+global nCB_5E :near
+global nCB_5F :near
+global nCB_60 :near
+global nCB_61 :near
+global nCB_62 :near
+global nCB_63 :near
+global nCB_64 :near
+global nCB_65 :near
+global nCB_66 :near
+global nCB_67 :near
+global nCB_68 :near
+global nCB_69 :near
+global nCB_6A :near
+global nCB_6B :near
+global nCB_6C :near
+global nCB_6D :near
+global nCB_6E :near
+global nCB_6F :near
+global nCB_70 :near
+global nCB_71 :near
+global nCB_72 :near
+global nCB_73 :near
+global nCB_74 :near
+global nCB_75 :near
+global nCB_76 :near
+global nCB_77 :near
+global nCB_78 :near
+global nCB_79 :near
+global nCB_7A :near
+global nCB_7B :near
+global nCB_7C :near
+global nCB_7D :near
+global nCB_7E :near
+global nCB_7F :near
+global nCB_80 :near
+global nCB_81 :near
+global nCB_82 :near
+global nCB_83 :near
+global nCB_84 :near
+global nCB_85 :near
+global nCB_86 :near
+global nCB_87 :near
+global nCB_88 :near
+global nCB_89 :near
+global nCB_8A :near
+global nCB_8B :near
+global nCB_8C :near
+global nCB_8D :near
+global nCB_8E :near
+global nCB_8F :near
+global nCB_90 :near
+global nCB_91 :near
+global nCB_92 :near
+global nCB_93 :near
+global nCB_94 :near
+global nCB_95 :near
+global nCB_96 :near
+global nCB_97 :near
+global nCB_98 :near
+global nCB_99 :near
+global nCB_9A :near
+global nCB_9B :near
+global nCB_9C :near
+global nCB_9D :near
+global nCB_9E :near
+global nCB_9F :near
+global nCB_A0 :near
+global nCB_A1 :near
+global nCB_A2 :near
+global nCB_A3 :near
+global nCB_A4 :near
+global nCB_A5 :near
+global nCB_A6 :near
+global nCB_A7 :near
+global nCB_A8 :near
+global nCB_A9 :near
+global nCB_AA :near
+global nCB_AB :near
+global nCB_AC :near
+global nCB_AD :near
+global nCB_AE :near
+global nCB_AF :near
+global nCB_B0 :near
+global nCB_B1 :near
+global nCB_B2 :near
+global nCB_B3 :near
+global nCB_B4 :near
+global nCB_B5 :near
+global nCB_B6 :near
+global nCB_B7 :near
+global nCB_B8 :near
+global nCB_B9 :near
+global nCB_BA :near
+global nCB_BB :near
+global nCB_BC :near
+global nCB_BD :near
+global nCB_BE :near
+global nCB_BF :near
+global nCB_C0 :near
+global nCB_C1 :near
+global nCB_C2 :near
+global nCB_C3 :near
+global nCB_C4 :near
+global nCB_C5 :near
+global nCB_C6 :near
+global nCB_C7 :near
+global nCB_C8 :near
+global nCB_C9 :near
+global nCB_CA :near
+global nCB_CB :near
+global nCB_CC :near
+global nCB_CD :near
+global nCB_CE :near
+global nCB_CF :near
+global nCB_D0 :near
+global nCB_D1 :near
+global nCB_D2 :near
+global nCB_D3 :near
+global nCB_D4 :near
+global nCB_D5 :near
+global nCB_D6 :near
+global nCB_D7 :near
+global nCB_D8 :near
+global nCB_D9 :near
+global nCB_DA :near
+global nCB_DB :near
+global nCB_DC :near
+global nCB_DD :near
+global nCB_DE :near
+global nCB_DF :near
+global nCB_E0 :near
+global nCB_E1 :near
+global nCB_E2 :near
+global nCB_E3 :near
+global nCB_E4 :near
+global nCB_E5 :near
+global nCB_E6 :near
+global nCB_E7 :near
+global nCB_E8 :near
+global nCB_E9 :near
+global nCB_EA :near
+global nCB_EB :near
+global nCB_EC :near
+global nCB_ED :near
+global nCB_EE :near
+global nCB_EF :near
+global nCB_F0 :near
+global nCB_F1 :near
+global nCB_F2 :near
+global nCB_F3 :near
+global nCB_F4 :near
+global nCB_F5 :near
+global nCB_F6 :near
+global nCB_F7 :near
+global nCB_F8 :near
+global nCB_F9 :near
+global nCB_FA :near
+global nCB_FB :near
+global nCB_FC :near
+global nCB_FD :near
+global nCB_FE :near
+global nCB_FF :near
+
+global nED_0	:near
+global nED_40	:near
+global nED_41	:near
+global nED_42	:near
+global nED_43	:near
+global nED_44	:near
+global nED_45	:near
+global nED_46	:near
+global nED_47	:near
+global nED_48	:near
+global nED_49	:near
+global nED_4A	:near
+global nED_4B	:near
+global nED_4D	:near
+global nED_4F	:near
+global nED_50	:near
+global nED_51	:near
+global nED_52	:near
+global nED_53	:near
+global nED_55	:near
+global nED_56	:near
+global nED_57	:near
+global nED_58	:near
+global nED_59	:near
+global nED_5A	:near
+global nED_5B	:near
+global nED_5D	:near
+global nED_5E	:near
+global nED_5F	:near
+global nED_60	:near
+global nED_61	:near
+global nED_62	:near
+global nED_63	:near
+global nED_67	:near
+global nED_68	:near
+global nED_69	:near
+global nED_6A	:near
+global nED_6B	:near
+global nED_6F	:near
+global nED_70	:near
+global nED_71	:near
+global nED_72	:near
+global nED_73	:near
+global nED_78	:near
+global nED_79	:near
+global nED_7A	:near
+global nED_7B	:near
+global nED_A0	:near
+global nED_A1	:near
+global nED_A2	:near
+global nED_A3	:near
+global nED_A8	:near
+global nED_A9	:near
+global nED_AA	:near
+global nED_AB	:near
+global nED_B0	:near
+global nED_B1	:near
+global nED_B2	:near
+global nED_B3	:near
+global nED_B8	:near
+global nED_B9	:near
+global nED_BA	:near
+global nED_BB	:near
+
+global nDD_CB_0 :near
+global nDD_CB_1 :near
+global nDD_CB_2 :near
+global nDD_CB_3 :near
+global nDD_CB_4 :near
+global nDD_CB_5 :near
+global nDD_CB_6 :near
+global nDD_CB_7 :near
+global nDD_CB_8 :near
+global nDD_CB_9 :near
+global nDD_CB_A :near
+global nDD_CB_B :near
+global nDD_CB_C :near
+global nDD_CB_D :near
+global nDD_CB_E :near
+global nDD_CB_F :near
+global nDD_CB_10 :near
+global nDD_CB_11 :near
+global nDD_CB_12 :near
+global nDD_CB_13 :near
+global nDD_CB_14 :near
+global nDD_CB_15 :near
+global nDD_CB_16 :near
+global nDD_CB_17 :near
+global nDD_CB_18 :near
+global nDD_CB_19 :near
+global nDD_CB_1A :near
+global nDD_CB_1B :near
+global nDD_CB_1C :near
+global nDD_CB_1D :near
+global nDD_CB_1E :near
+global nDD_CB_1F :near
+global nDD_CB_20 :near
+global nDD_CB_21 :near
+global nDD_CB_22 :near
+global nDD_CB_23 :near
+global nDD_CB_24 :near
+global nDD_CB_25 :near
+global nDD_CB_26 :near
+global nDD_CB_27 :near
+global nDD_CB_28 :near
+global nDD_CB_29 :near
+global nDD_CB_2A :near
+global nDD_CB_2B :near
+global nDD_CB_2C :near
+global nDD_CB_2D :near
+global nDD_CB_2E :near
+global nDD_CB_2F :near
+global nDD_CB_30 :near
+global nDD_CB_31 :near
+global nDD_CB_32 :near
+global nDD_CB_33 :near
+global nDD_CB_34 :near
+global nDD_CB_35 :near
+global nDD_CB_36 :near
+global nDD_CB_37 :near
+global nDD_CB_38 :near
+global nDD_CB_39 :near
+global nDD_CB_3A :near
+global nDD_CB_3B :near
+global nDD_CB_3C :near
+global nDD_CB_3D :near
+global nDD_CB_3E :near
+global nDD_CB_3F :near
+global nDD_CB_40 :near
+global nDD_CB_41 :near
+global nDD_CB_42 :near
+global nDD_CB_43 :near
+global nDD_CB_44 :near
+global nDD_CB_45 :near
+global nDD_CB_46 :near
+global nDD_CB_47 :near
+global nDD_CB_48 :near
+global nDD_CB_49 :near
+global nDD_CB_4A :near
+global nDD_CB_4B :near
+global nDD_CB_4C :near
+global nDD_CB_4D :near
+global nDD_CB_4E :near
+global nDD_CB_4F :near
+global nDD_CB_50 :near
+global nDD_CB_51 :near
+global nDD_CB_52 :near
+global nDD_CB_53 :near
+global nDD_CB_54 :near
+global nDD_CB_55 :near
+global nDD_CB_56 :near
+global nDD_CB_57 :near
+global nDD_CB_58 :near
+global nDD_CB_59 :near
+global nDD_CB_5A :near
+global nDD_CB_5B :near
+global nDD_CB_5C :near
+global nDD_CB_5D :near
+global nDD_CB_5E :near
+global nDD_CB_5F :near
+global nDD_CB_60 :near
+global nDD_CB_61 :near
+global nDD_CB_62 :near
+global nDD_CB_63 :near
+global nDD_CB_64 :near
+global nDD_CB_65 :near
+global nDD_CB_66 :near
+global nDD_CB_67 :near
+global nDD_CB_68 :near
+global nDD_CB_69 :near
+global nDD_CB_6A :near
+global nDD_CB_6B :near
+global nDD_CB_6C :near
+global nDD_CB_6D :near
+global nDD_CB_6E :near
+global nDD_CB_6F :near
+global nDD_CB_70 :near
+global nDD_CB_71 :near
+global nDD_CB_72 :near
+global nDD_CB_73 :near
+global nDD_CB_74 :near
+global nDD_CB_75 :near
+global nDD_CB_76 :near
+global nDD_CB_77 :near
+global nDD_CB_78 :near
+global nDD_CB_79 :near
+global nDD_CB_7A :near
+global nDD_CB_7B :near
+global nDD_CB_7C :near
+global nDD_CB_7D :near
+global nDD_CB_7E :near
+global nDD_CB_7F :near
+global nDD_CB_80 :near
+global nDD_CB_81 :near
+global nDD_CB_82 :near
+global nDD_CB_83 :near
+global nDD_CB_84 :near
+global nDD_CB_85 :near
+global nDD_CB_86 :near
+global nDD_CB_87 :near
+global nDD_CB_88 :near
+global nDD_CB_89 :near
+global nDD_CB_8A :near
+global nDD_CB_8B :near
+global nDD_CB_8C :near
+global nDD_CB_8D :near
+global nDD_CB_8E :near
+global nDD_CB_8F :near
+global nDD_CB_90 :near
+global nDD_CB_91 :near
+global nDD_CB_92 :near
+global nDD_CB_93 :near
+global nDD_CB_94 :near
+global nDD_CB_95 :near
+global nDD_CB_96 :near
+global nDD_CB_97 :near
+global nDD_CB_98 :near
+global nDD_CB_99 :near
+global nDD_CB_9A :near
+global nDD_CB_9B :near
+global nDD_CB_9C :near
+global nDD_CB_9D :near
+global nDD_CB_9E :near
+global nDD_CB_9F :near
+global nDD_CB_A0 :near
+global nDD_CB_A1 :near
+global nDD_CB_A2 :near
+global nDD_CB_A3 :near
+global nDD_CB_A4 :near
+global nDD_CB_A5 :near
+global nDD_CB_A6 :near
+global nDD_CB_A7 :near
+global nDD_CB_A8 :near
+global nDD_CB_A9 :near
+global nDD_CB_AA :near
+global nDD_CB_AB :near
+global nDD_CB_AC :near
+global nDD_CB_AD :near
+global nDD_CB_AE :near
+global nDD_CB_AF :near
+global nDD_CB_B0 :near
+global nDD_CB_B1 :near
+global nDD_CB_B2 :near
+global nDD_CB_B3 :near
+global nDD_CB_B4 :near
+global nDD_CB_B5 :near
+global nDD_CB_B6 :near
+global nDD_CB_B7 :near
+global nDD_CB_B8 :near
+global nDD_CB_B9 :near
+global nDD_CB_BA :near
+global nDD_CB_BB :near
+global nDD_CB_BC :near
+global nDD_CB_BD :near
+global nDD_CB_BE :near
+global nDD_CB_BF :near
+global nDD_CB_C0 :near
+global nDD_CB_C1 :near
+global nDD_CB_C2 :near
+global nDD_CB_C3 :near
+global nDD_CB_C4 :near
+global nDD_CB_C5 :near
+global nDD_CB_C6 :near
+global nDD_CB_C7 :near
+global nDD_CB_C8 :near
+global nDD_CB_C9 :near
+global nDD_CB_CA :near
+global nDD_CB_CB :near
+global nDD_CB_CC :near
+global nDD_CB_CD :near
+global nDD_CB_CE :near
+global nDD_CB_CF :near
+global nDD_CB_D0 :near
+global nDD_CB_D1 :near
+global nDD_CB_D2 :near
+global nDD_CB_D3 :near
+global nDD_CB_D4 :near
+global nDD_CB_D5 :near
+global nDD_CB_D6 :near
+global nDD_CB_D7 :near
+global nDD_CB_D8 :near
+global nDD_CB_D9 :near
+global nDD_CB_DA :near
+global nDD_CB_DB :near
+global nDD_CB_DC :near
+global nDD_CB_DD :near
+global nDD_CB_DE :near
+global nDD_CB_DF :near
+global nDD_CB_E0 :near
+global nDD_CB_E1 :near
+global nDD_CB_E2 :near
+global nDD_CB_E3 :near
+global nDD_CB_E4 :near
+global nDD_CB_E5 :near
+global nDD_CB_E6 :near
+global nDD_CB_E7 :near
+global nDD_CB_E8 :near
+global nDD_CB_E9 :near
+global nDD_CB_EA :near
+global nDD_CB_EB :near
+global nDD_CB_EC :near
+global nDD_CB_ED :near
+global nDD_CB_EE :near
+global nDD_CB_EF :near
+global nDD_CB_F0 :near
+global nDD_CB_F1 :near
+global nDD_CB_F2 :near
+global nDD_CB_F3 :near
+global nDD_CB_F4 :near
+global nDD_CB_F5 :near
+global nDD_CB_F6 :near
+global nDD_CB_F7 :near
+global nDD_CB_F8 :near
+global nDD_CB_F9 :near
+global nDD_CB_FA :near
+global nDD_CB_FB :near
+global nDD_CB_FC :near
+global nDD_CB_FD :near
+global nDD_CB_FE :near
+global nDD_CB_FF :near

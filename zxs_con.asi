@@ -1,0 +1,394 @@
+;Выводит изображение
+
+@@v3:
+ mov dh,[si+256*7]
+ ror dh,4
+
+ mov ah,ch
+ shr dh,1
+ jnc @@pap07
+ mov ah,cl
+@@pap07:
+ shr dh,1
+ mov al,ch
+ jnc @@pap17
+ mov al,cl
+@@pap17:
+ shl eax,16
+ shr dh,1
+ mov ah,ch
+ jnc @@pap27
+ mov ah,cl
+@@pap27:
+ shr dh,1
+ mov al,ch
+ jnc @@pap37
+ mov al,cl
+@@pap37:
+ mov [es:di+320*7],eax
+
+ mov ah,ch
+ shr dh,1
+ jnc @@pap47
+ mov ah,cl
+@@pap47:
+ shr dh,1
+ mov al,ch
+ jnc @@pap57
+ mov al,cl
+@@pap57:
+ shl eax,16
+ shr dh,1
+ mov ah,ch
+ jnc @@pap67
+ mov ah,cl
+@@pap67:
+ shr dh,1
+ mov al,ch
+ jnc @@pap77
+ mov al,cl
+@@pap77:
+ mov [es:di+4+320*7],eax
+
+ mov dh,[si+256]
+ ror dh,4
+
+ mov ah,ch
+ shr dh,1
+ jnc @@pap01
+ mov ah,cl
+@@pap01:
+ shr dh,1
+ mov al,ch
+ jnc @@pap11
+ mov al,cl
+@@pap11:
+ shl eax,16
+ shr dh,1
+ mov ah,ch
+ jnc @@pap21
+ mov ah,cl
+@@pap21:
+ shr dh,1
+ mov al,ch
+ jnc @@pap31
+ mov al,cl
+@@pap31:
+ mov [es:di+320],eax
+
+ mov ah,ch
+ shr dh,1
+ jnc @@pap41
+ mov ah,cl
+@@pap41:
+ shr dh,1
+ mov al,ch
+ jnc @@pap51
+ mov al,cl
+@@pap51:
+ shl eax,16
+ shr dh,1
+ mov ah,ch
+ jnc @@pap61
+ mov ah,cl
+@@pap61:
+ shr dh,1
+ mov al,ch
+ jnc @@pap71
+ mov al,cl
+@@pap71:
+ mov [es:di+4+320],eax
+
+ mov dh,[si+256*2]
+ ror dh,4
+
+ mov ah,ch
+ shr dh,1
+ jnc @@pap02
+ mov ah,cl
+@@pap02:
+ shr dh,1
+ mov al,ch
+ jnc @@pap12
+ mov al,cl
+@@pap12:
+ shl eax,16
+ shr dh,1
+ mov ah,ch
+ jnc @@pap22
+ mov ah,cl
+@@pap22:
+ shr dh,1
+ mov al,ch
+ jnc @@pap32
+ mov al,cl
+@@pap32:
+ mov [es:di+320*2],eax
+
+ mov ah,ch
+ shr dh,1
+ jnc @@pap42
+ mov ah,cl
+@@pap42:
+ shr dh,1
+ mov al,ch
+ jnc @@pap52
+ mov al,cl
+@@pap52:
+ shl eax,16
+ shr dh,1
+ mov ah,ch
+ jnc @@pap62
+ mov ah,cl
+@@pap62:
+ shr dh,1
+ mov al,ch
+ jnc @@pap72
+ mov al,cl
+@@pap72:
+ mov [es:di+4+320*2],eax
+
+ mov dh,[si+256*3]
+ ror dh,4
+
+ mov ah,ch
+ shr dh,1
+ jnc @@pap03
+ mov ah,cl
+@@pap03:
+ shr dh,1
+ mov al,ch
+ jnc @@pap13
+ mov al,cl
+@@pap13:
+ shl eax,16
+ shr dh,1
+ mov ah,ch
+ jnc @@pap23
+ mov ah,cl
+@@pap23:
+ shr dh,1
+ mov al,ch
+ jnc @@pap33
+ mov al,cl
+@@pap33:
+ mov [es:di+320*3],eax
+
+ mov ah,ch
+ shr dh,1
+ jnc @@pap43
+ mov ah,cl
+@@pap43:
+ shr dh,1
+ mov al,ch
+ jnc @@pap53
+ mov al,cl
+@@pap53:
+ shl eax,16
+ shr dh,1
+ mov ah,ch
+ jnc @@pap63
+ mov ah,cl
+@@pap63:
+ shr dh,1
+ mov al,ch
+ jnc @@pap73
+ mov al,cl
+@@pap73:
+ mov [es:di+4+320*3],eax
+
+ mov dh,[si+256*4]
+ ror dh,4
+
+ mov ah,ch
+ shr dh,1
+ jnc @@pap04
+ mov ah,cl
+@@pap04:
+ shr dh,1
+ mov al,ch
+ jnc @@pap14
+ mov al,cl
+@@pap14:
+ shl eax,16
+ shr dh,1
+ mov ah,ch
+ jnc @@pap24
+ mov ah,cl
+@@pap24:
+ shr dh,1
+ mov al,ch
+ jnc @@pap34
+ mov al,cl
+@@pap34:
+ mov [es:di+320*4],eax
+
+ mov ah,ch
+ shr dh,1
+ jnc @@pap44
+ mov ah,cl
+@@pap44:
+ shr dh,1
+ mov al,ch
+ jnc @@pap54
+ mov al,cl
+@@pap54:
+ shl eax,16
+ shr dh,1
+ mov ah,ch
+ jnc @@pap64
+ mov ah,cl
+@@pap64:
+ shr dh,1
+ mov al,ch
+ jnc @@pap74
+ mov al,cl
+@@pap74:
+ mov [es:di+4+320*4],eax
+
+ mov dh,[si+256*5]
+ ror dh,4
+
+ mov ah,ch
+ shr dh,1
+ jnc @@pap05
+ mov ah,cl
+@@pap05:
+ shr dh,1
+ mov al,ch
+ jnc @@pap15
+ mov al,cl
+@@pap15:
+ shl eax,16
+ shr dh,1
+ mov ah,ch
+ jnc @@pap25
+ mov ah,cl
+@@pap25:
+ shr dh,1
+ mov al,ch
+ jnc @@pap35
+ mov al,cl
+@@pap35:
+ mov [es:di+320*5],eax
+
+ mov ah,ch
+ shr dh,1
+ jnc @@pap45
+ mov ah,cl
+@@pap45:
+ shr dh,1
+ mov al,ch
+ jnc @@pap55
+ mov al,cl
+@@pap55:
+ shl eax,16
+ shr dh,1
+ mov ah,ch
+ jnc @@pap65
+ mov ah,cl
+@@pap65:
+ shr dh,1
+ mov al,ch
+ jnc @@pap75
+ mov al,cl
+@@pap75:
+ mov [es:di+4+320*5],eax
+
+ mov dh,[si+256*6]
+ ror dh,4
+
+ mov ah,ch
+ shr dh,1
+ jnc @@pap06
+ mov ah,cl
+@@pap06:
+ shr dh,1
+ mov al,ch
+ jnc @@pap16
+ mov al,cl
+@@pap16:
+ shl eax,16
+ shr dh,1
+ mov ah,ch
+ jnc @@pap26
+ mov ah,cl
+@@pap26:
+ shr dh,1
+ mov al,ch
+ jnc @@pap36
+ mov al,cl
+@@pap36:
+ mov [es:di+320*6],eax
+
+ mov ah,ch
+ shr dh,1
+ jnc @@pap46
+ mov ah,cl
+@@pap46:
+ shr dh,1
+ mov al,ch
+ jnc @@pap56
+ mov al,cl
+@@pap56:
+ shl eax,16
+ shr dh,1
+ mov ah,ch
+ jnc @@pap66
+ mov ah,cl
+@@pap66:
+ shr dh,1
+ mov al,ch
+ jnc @@pap76
+ mov al,cl
+@@pap76:
+ mov [es:di+4+320*6],eax
+
+ mov dh,[si]		;DH=8 точек
+ ror dh,4
+
+ mov ah,ch
+ shr dh,1
+ jnc @@pap0
+ mov ah,cl
+@@pap0:
+ shr dh,1
+ mov al,ch
+ jnc @@pap1
+ mov al,cl
+@@pap1:
+ shl eax,16
+ shr dh,1
+ mov ah,ch
+ jnc @@pap2
+ mov ah,cl
+@@pap2:
+ shr dh,1
+ mov al,ch
+ jnc @@pap3
+ mov al,cl
+@@pap3:
+ stosd
+
+ mov ah,ch
+ shr dh,1
+ jnc @@pap4
+ mov ah,cl
+@@pap4:
+ shr dh,1
+ mov al,ch
+ jnc @@pap5
+ mov al,cl
+@@pap5:
+ shl eax,16
+ shr dh,1
+ mov ah,ch
+ jnc @@pap6
+ mov ah,cl
+@@pap6:
+ shr dh,1
+ mov al,ch
+ jnc @@pap7
+ mov al,cl
+@@pap7:
+ stosd

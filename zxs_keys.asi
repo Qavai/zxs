@@ -1,0 +1,908 @@
+;Клавиатура
+
+tKeysJump label word
+ dw kNULL
+ dw kEsc
+ dw k1
+ dw k2
+ dw k3
+ dw k4
+ dw k5
+ dw k6
+ dw k7
+ dw k8
+ dw k9
+ dw k0
+ dw kTire
+ dw kPlus
+ dw kBackSpace
+ dw kTab
+ dw kQ		;10h
+ dw kW
+ dw kE
+ dw kR
+ dw kT
+ dw kY
+ dw kU
+ dw kI
+ dw kO
+ dw kP
+ dw kSq1
+ dw kSq2
+ dw kEnter
+ dw kCtrlL
+ dw kA
+ dw kS
+ dw kD		;20h
+ dw kF
+ dw kG
+ dw kH
+ dw kJ
+ dw kK
+ dw kL
+ dw kPointZap
+ dw kQuote
+ dw kTilde
+ dw kShiftL
+ dw kSlash
+ dw kZ
+ dw kX
+ dw kC
+ dw kV
+ dw kB		;30h
+ dw kN
+ dw kM
+ dw kZap
+ dw kPoint
+ dw kDelenie
+ dw kShiftR
+ dw kPrintScr
+ dw kAltL
+ dw kSpaceBar
+ dw kCapsLock
+ dw kF1
+ dw kF2
+ dw kF3
+ dw kF4
+ dw kF5
+ dw kF6		;40h
+ dw kF7
+ dw kF8
+ dw kF9
+ dw kF10
+ dw kNumLock
+ dw kScrollLock
+ dw kHome7
+ dw kUp8
+ dw kPageUp9
+ dw kMinusGray
+ dw kLeft4
+ dw kCenter5
+ dw kRight6
+ dw kPlusGray
+ dw kEnd1
+ dw kDown2	;50h
+ dw kPageDown3
+ dw kIns0
+ dw kDelPoint
+ dw kNULL	;kAltPrintScr	;54h
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL	;60h
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL	;70h
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+			;Отжатие
+ dw kNULL	;80h
+ dw k_Esc
+ dw k_1
+ dw k_2
+ dw k_3
+ dw k_4
+ dw k_5
+ dw k_6
+ dw k_7
+ dw k_8
+ dw k_9
+ dw k_0
+ dw k_Tire
+ dw k_Plus
+ dw k_BackSpace
+ dw k_Tab
+ dw k_Q		;90h
+ dw k_W
+ dw k_E
+ dw k_R
+ dw k_T
+ dw k_Y
+ dw k_U
+ dw k_I
+ dw k_O
+ dw k_P
+ dw k_Sq1
+ dw k_Sq2
+ dw k_Enter
+ dw k_CtrlL
+ dw k_A
+ dw k_S
+ dw k_D		;A0h
+ dw k_F
+ dw k_G
+ dw k_H
+ dw k_J
+ dw k_K
+ dw k_L
+ dw k_PointZap
+ dw k_Quote
+ dw k_Tilde
+ dw k_ShiftL
+ dw k_Slash
+ dw k_Z
+ dw k_X
+ dw k_C
+ dw k_V
+ dw k_B		;B0h
+ dw k_N
+ dw k_M
+ dw k_Zap
+ dw k_Point
+ dw k_Delenie
+ dw k_ShiftR
+ dw k_PrintScr
+ dw k_AltL
+ dw k_SpaceBar
+ dw k_CapsLock
+ dw k_F1
+ dw k_F2
+ dw k_F3
+ dw k_F4
+ dw k_F5
+ dw k_F6	;C0h
+ dw k_F7
+ dw k_F8
+ dw k_F9
+ dw k_F10
+ dw k_NumLock
+ dw k_ScrollLock
+ dw k_Home7
+ dw k_Up8
+ dw k_PageUp9
+ dw k_MinusGray
+ dw k_Left4
+ dw k_Center5
+ dw k_Right6
+ dw k_PlusGray
+ dw k_End1
+ dw k_Down2	;D0h
+ dw k_PageDown3
+ dw k_Ins0
+ dw k_DelPoint
+ dw kNULL	;kAltPrintScr	;54h+128=D4h
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL	;E0h
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL	;F0h
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+ dw kNULL
+
+kNULL:
+ jmp ExitInt9
+
+kEsc:
+ jmp ExitInt9
+
+k1:
+ and bptr [Array8KeyLine+dat+3],not 1
+ jmp ExitInt9
+
+k2:
+ and bptr [Array8KeyLine+dat+3],not 2
+ jmp ExitInt9
+
+k3:
+ and bptr [Array8KeyLine+dat+3],not 4
+ jmp ExitInt9
+
+k4:
+ and bptr [Array8KeyLine+dat+3],not 8
+ jmp ExitInt9
+
+k5:
+ and bptr [Array8KeyLine+dat+3],not 16
+ jmp ExitInt9
+ 
+k6:
+ and bptr [Array8KeyLine+dat+4],not 16
+ jmp ExitInt9
+
+k7:
+ and bptr [Array8KeyLine+dat+4],not 8
+ jmp ExitInt9
+
+k8:
+ and bptr [Array8KeyLine+dat+4],not 4
+ jmp ExitInt9
+
+k9:
+ and bptr [Array8KeyLine+dat+4],not 2
+ jmp ExitInt9
+
+k0:
+ and bptr [Array8KeyLine+dat+4],not 1
+ jmp ExitInt9
+
+kTire:
+ and bptr [Array8KeyLine+dat+7],not 2	;Symbol shift
+ and bptr [Array8KeyLine+dat+6],not 8
+ jmp ExitInt9
+
+kPlus:
+ and bptr [Array8KeyLine+dat+7],not 2	;Symbol shift
+ and bptr [Array8KeyLine+dat+6],not 2
+ jmp ExitInt9
+
+kBackSpace:
+ and bptr [Array8KeyLine+dat],not 1	;Caps shift
+ and bptr [Array8KeyLine+dat+4],not 1
+ jmp ExitInt9
+
+kTab:
+ and bptr [Array8KeyLine+dat+7],not 2	;Symbol shift
+ and bptr [Array8KeyLine+dat],not 1	;Caps shift
+ jmp ExitInt9
+
+kQ:
+ and bptr [Array8KeyLine+dat+2],not 1
+ jmp ExitInt9
+
+kW:
+ and bptr [Array8KeyLine+dat+2],not 2
+ jmp ExitInt9
+
+kE:
+ and bptr [Array8KeyLine+dat+2],not 4
+ jmp ExitInt9
+
+kR:
+ and bptr [Array8KeyLine+dat+2],not 8
+ jmp ExitInt9
+
+kT:
+ and bptr [Array8KeyLine+dat+2],not 16
+ jmp ExitInt9
+
+kY:
+ and bptr [Array8KeyLine+dat+5],not 16
+ jmp ExitInt9
+
+kU:
+ and bptr [Array8KeyLine+dat+5],not 8
+ jmp ExitInt9
+
+kI:
+ and bptr [Array8KeyLine+dat+5],not 4
+ jmp ExitInt9
+
+kO:
+ and bptr [Array8KeyLine+dat+5],not 2
+ jmp ExitInt9
+
+kP:
+ and bptr [Array8KeyLine+dat+5],not 1
+ jmp ExitInt9
+
+kSq1:
+ jmp ExitInt9
+
+kSq2:
+ jmp ExitInt9
+
+kEnter:
+ and bptr [Array8KeyLine+dat+6],not 1
+ jmp ExitInt9
+
+kCtrlL:
+ and bptr [Array8KeyLine+dat+7],not 2	;Symbol shift
+ jmp ExitInt9
+
+kA:
+ and bptr [Array8KeyLine+dat+1],not 1
+ jmp ExitInt9
+
+kS:
+ and bptr [Array8KeyLine+dat+1],not 2
+ jmp ExitInt9
+
+kD:
+ and bptr [Array8KeyLine+dat+1],not 4
+ jmp ExitInt9
+
+kF:
+ and bptr [Array8KeyLine+dat+1],not 8
+ jmp ExitInt9
+
+kG:
+ and bptr [Array8KeyLine+dat+1],not 16
+ jmp ExitInt9
+
+kH:
+ and bptr [Array8KeyLine+dat+6],not 16
+ jmp ExitInt9
+
+kJ:
+ and bptr [Array8KeyLine+dat+6],not 8
+ jmp ExitInt9
+
+kK:
+ and bptr [Array8KeyLine+dat+6],not 4
+ jmp ExitInt9
+
+kL:
+ and bptr [Array8KeyLine+dat+6],not 2
+ jmp ExitInt9
+
+kPointZap:
+ and bptr [Array8KeyLine+dat+7],not 2	;Symbol shift
+ and bptr [Array8KeyLine+dat+5],not 2
+ jmp ExitInt9
+
+kQuote:
+ and bptr [Array8KeyLine+dat+7],not 2	;Symbol shift
+ and bptr [Array8KeyLine+dat+5],not 1
+ jmp ExitInt9
+
+kTilde:
+ and bptr [Array8KeyLine+dat],not 1	;Caps shift
+ and bptr [Array8KeyLine+dat+4],not 2
+ jmp ExitInt9
+
+kShiftL:
+ and bptr [Array8KeyLine+dat],not 1	;Caps shift
+ jmp ExitInt9
+
+kSlash:
+ and bptr [Array8KeyLine+dat],not 1	;Caps shift
+ and bptr [Array8KeyLine+dat+7],not 1
+ jmp ExitInt9
+
+kZ:
+ and bptr [Array8KeyLine+dat],not 2
+ jmp ExitInt9
+
+kX:
+ and bptr [Array8KeyLine+dat],not 4
+ jmp ExitInt9
+
+kC:
+ and bptr [Array8KeyLine+dat],not 8
+ jmp ExitInt9
+
+kV:
+ and bptr [Array8KeyLine+dat],not 16
+ jmp ExitInt9
+
+kB:
+ and bptr [Array8KeyLine+dat+7],not 16
+ jmp ExitInt9
+
+kN:
+ and bptr [Array8KeyLine+dat+7],not 8
+ jmp ExitInt9
+
+kM:
+ and bptr [Array8KeyLine+dat+7],not 4
+ jmp ExitInt9
+
+kZap:
+ and bptr [Array8KeyLine+dat+7],not 2	;Symbol shift
+ and bptr [Array8KeyLine+dat+7],not 8
+ jmp ExitInt9
+
+kPoint:
+ and bptr [Array8KeyLine+dat+7],not 2	;Symbol shift
+ and bptr [Array8KeyLine+dat+7],not 4
+ jmp ExitInt9
+
+kDelenie:
+ and bptr [Array8KeyLine+dat+7],not 2	;Symbol shift
+ and bptr [Array8KeyLine+dat],not 16
+ jmp ExitInt9
+
+kShiftR:
+ and bptr [Array8KeyLine+dat],not 1	;Caps shift
+ jmp ExitInt9
+
+kPrintScr:
+ jmp ExitInt9
+
+kAltL:
+ jmp ExitInt9
+
+kSpaceBar:
+ and bptr [Array8KeyLine+dat+7],not 1
+ jmp ExitInt9
+
+kCapsLock:
+ and bptr [Array8KeyLine+dat],not 1	;Caps shift
+ and bptr [Array8KeyLine+dat+3],not 2
+ jmp ExitInt9
+
+kF1:
+ jmp ExitInt9
+
+kF2:
+ jmp ExitInt9
+
+kF3:
+ jmp ExitInt9
+
+kF4:
+ jmp ExitInt9
+
+kF5:
+ jmp ExitInt9
+
+kF6:
+ jmp ExitInt9
+
+kF7:
+ jmp ExitInt9
+
+kF8:
+ jmp ExitInt9
+
+kF9:
+ jmp ExitInt9
+
+kF10:
+ jmp ExitInt9
+
+kNumLock:
+ jmp ExitInt9
+
+kScrollLock:
+ jmp ExitInt9
+
+kHome7:
+ jmp ExitInt9
+
+kUp8:
+ and bptr [Array8KeyLine+dat],not 1	;Caps shift
+ and bptr [Array8KeyLine+dat+4],not 8
+ jmp ExitInt9
+
+kPageUp9:
+ jmp ExitInt9
+
+kMinusGray:
+ jmp ExitInt9
+
+kLeft4:
+ and bptr [Array8KeyLine+dat],not 1	;Caps shift
+ and bptr [Array8KeyLine+dat+3],not 16
+ jmp ExitInt9
+
+kCenter5:
+ jmp ExitInt9
+
+kRight6:
+ and bptr [Array8KeyLine+dat],not 1	;Caps shift
+ and bptr [Array8KeyLine+dat+4],not 4
+ jmp ExitInt9
+
+kPlusGray:
+ jmp ExitInt9
+
+kEnd1:
+ jmp ExitInt9
+
+kDown2:
+ and bptr [Array8KeyLine+dat],not 1	;Caps shift
+ and bptr [Array8KeyLine+dat+4],not 16
+ jmp ExitInt9
+
+kPageDown3:
+ jmp ExitInt9
+
+kIns0:
+ jmp ExitInt9
+
+kDelPoint:
+ jmp ExitInt9
+
+			;Отжатие
+k_Esc:
+ jmp ExitInt9
+
+k_1:
+ or bptr [Array8KeyLine+dat+3],1
+ jmp ExitInt9
+
+k_2:
+ or bptr [Array8KeyLine+dat+3],2
+ jmp ExitInt9
+
+k_3:
+ or bptr [Array8KeyLine+dat+3],4
+ jmp ExitInt9
+
+k_4:
+ or bptr [Array8KeyLine+dat+3],8
+ jmp ExitInt9
+
+k_5:
+ or bptr [Array8KeyLine+dat+3],16
+ jmp ExitInt9
+ 
+k_6:
+ or bptr [Array8KeyLine+dat+4],16
+ jmp ExitInt9
+
+k_7:
+ or bptr [Array8KeyLine+dat+4],8
+ jmp ExitInt9
+
+k_8:
+ or bptr [Array8KeyLine+dat+4],4
+ jmp ExitInt9
+
+k_9:
+ or bptr [Array8KeyLine+dat+4],2
+ jmp ExitInt9
+
+k_0:
+ or bptr [Array8KeyLine+dat+4],1
+ jmp ExitInt9
+
+k_Tire:
+ or bptr [Array8KeyLine+dat+7],2	;Symbol shift
+ or bptr [Array8KeyLine+dat+6],8
+ jmp ExitInt9
+
+k_Plus:
+ or bptr [Array8KeyLine+dat+7],2	;Symbol shift
+ or bptr [Array8KeyLine+dat+6],2
+ jmp ExitInt9
+
+k_BackSpace:
+ or bptr [Array8KeyLine+dat],1	;Caps shift
+ or bptr [Array8KeyLine+dat+4],1
+ jmp ExitInt9
+
+k_Tab:
+ or bptr [Array8KeyLine+dat+7],2	;Symbol shift
+ or bptr [Array8KeyLine+dat],1	;Caps shift
+ jmp ExitInt9
+
+k_Q:
+ or bptr [Array8KeyLine+dat+2],1
+ jmp ExitInt9
+
+k_W:
+ or bptr [Array8KeyLine+dat+2],2
+ jmp ExitInt9
+
+k_E:
+ or bptr [Array8KeyLine+dat+2],4
+ jmp ExitInt9
+
+k_R:
+ or bptr [Array8KeyLine+dat+2],8
+ jmp ExitInt9
+
+k_T:
+ or bptr [Array8KeyLine+dat+2],16
+ jmp ExitInt9
+
+k_Y:
+ or bptr [Array8KeyLine+dat+5],16
+ jmp ExitInt9
+
+k_U:
+ or bptr [Array8KeyLine+dat+5],8
+ jmp ExitInt9
+
+k_I:
+ or bptr [Array8KeyLine+dat+5],4
+ jmp ExitInt9
+
+k_O:
+ or bptr [Array8KeyLine+dat+5],2
+ jmp ExitInt9
+
+k_P:
+ or bptr [Array8KeyLine+dat+5],1
+ jmp ExitInt9
+
+k_Sq1:
+ jmp ExitInt9
+
+k_Sq2:
+ jmp ExitInt9
+
+k_Enter:
+ or bptr [Array8KeyLine+dat+6],1
+ jmp ExitInt9
+
+k_CtrlL:
+ or bptr [Array8KeyLine+dat+7],2	;Symbol shift
+ jmp ExitInt9
+
+k_A:
+ or bptr [Array8KeyLine+dat+1],1
+ jmp ExitInt9
+
+k_S:
+ or bptr [Array8KeyLine+dat+1],2
+ jmp ExitInt9
+
+k_D:
+ or bptr [Array8KeyLine+dat+1],4
+ jmp ExitInt9
+
+k_F:
+ or bptr [Array8KeyLine+dat+1],8
+ jmp ExitInt9
+
+k_G:
+ or bptr [Array8KeyLine+dat+1],16
+ jmp ExitInt9
+
+k_H:
+ or bptr [Array8KeyLine+dat+6],16
+ jmp ExitInt9
+
+k_J:
+ or bptr [Array8KeyLine+dat+6],8
+ jmp ExitInt9
+
+k_K:
+ or bptr [Array8KeyLine+dat+6],4
+ jmp ExitInt9
+
+k_L:
+ or bptr [Array8KeyLine+dat+6],2
+ jmp ExitInt9
+
+k_PointZap:
+ or bptr [Array8KeyLine+dat+7],2	;Symbol shift
+ or bptr [Array8KeyLine+dat+5],2
+ jmp ExitInt9
+
+k_Quote:
+ or bptr [Array8KeyLine+dat+7],2	;Symbol shift
+ or bptr [Array8KeyLine+dat+5],1
+ jmp ExitInt9
+
+k_Tilde:
+ or bptr [Array8KeyLine+dat],1	;Caps shift
+ or bptr [Array8KeyLine+dat+4],2
+ jmp ExitInt9
+
+k_ShiftL:
+ or bptr [Array8KeyLine+dat],1	;Caps shift
+ jmp ExitInt9
+
+k_Slash:
+ or bptr [Array8KeyLine+dat],1	;Caps shift
+ or bptr [Array8KeyLine+dat+7],1
+ jmp ExitInt9
+
+k_Z:
+ or bptr [Array8KeyLine+dat],2
+ jmp ExitInt9
+
+k_X:
+ or bptr [Array8KeyLine+dat],4
+ jmp ExitInt9
+
+k_C:
+ or bptr [Array8KeyLine+dat],8
+ jmp ExitInt9
+
+k_V:
+ or bptr [Array8KeyLine+dat],16
+ jmp ExitInt9
+
+k_B:
+ or bptr [Array8KeyLine+dat+7],16
+ jmp ExitInt9
+
+k_N:
+ or bptr [Array8KeyLine+dat+7],8
+ jmp ExitInt9
+
+k_M:
+ or bptr [Array8KeyLine+dat+7],4
+ jmp ExitInt9
+
+k_Zap:
+ or bptr [Array8KeyLine+dat+7],2	;Symbol shift
+ or bptr [Array8KeyLine+dat+7],8
+ jmp ExitInt9
+
+k_Point:
+ or bptr [Array8KeyLine+dat+7],2	;Symbol shift
+ or bptr [Array8KeyLine+dat+7],4
+ jmp ExitInt9
+
+k_Delenie:
+ or bptr [Array8KeyLine+dat+7],2	;Symbol shift
+ or bptr [Array8KeyLine+dat],16
+ jmp ExitInt9
+
+k_ShiftR:
+ or bptr [Array8KeyLine+dat],1	;Caps shift
+ jmp ExitInt9
+
+k_PrintScr:
+ jmp ExitInt9
+
+k_AltL:
+ jmp ExitInt9
+
+k_SpaceBar:
+ or bptr [Array8KeyLine+dat+7],1
+ jmp ExitInt9
+
+k_CapsLock:
+ or bptr [Array8KeyLine+dat],1	;Caps shift
+ or bptr [Array8KeyLine+dat+3],2
+ jmp ExitInt9
+
+k_F1:
+ jmp ExitInt9
+
+k_F2:
+ jmp ExitInt9
+
+k_F3:
+ jmp ExitInt9
+
+k_F4:
+ jmp ExitInt9
+
+k_F5:
+ jmp ExitInt9
+
+k_F6:
+ jmp ExitInt9
+
+k_F7:
+ jmp ExitInt9
+
+k_F8:
+ jmp ExitInt9
+
+k_F9:
+ jmp ExitInt9
+
+k_F10:
+ jmp ExitInt9
+
+k_NumLock:
+ jmp ExitInt9
+
+k_ScrollLock:
+ jmp ExitInt9
+
+k_Home7:
+ jmp ExitInt9
+
+k_Up8:
+ or bptr [Array8KeyLine+dat],1	;Caps shift
+ or bptr [Array8KeyLine+dat+4],8
+ jmp ExitInt9
+
+k_PageUp9:
+ jmp ExitInt9
+
+k_MinusGray:
+ jmp ExitInt9
+
+k_Left4:
+ or bptr [Array8KeyLine+dat],1	;Caps shift
+ or bptr [Array8KeyLine+dat+3],16
+ jmp ExitInt9
+
+k_Center5:
+ jmp ExitInt9
+
+k_Right6:
+ or bptr [Array8KeyLine+dat],1	;Caps shift
+ or bptr [Array8KeyLine+dat+4],4
+ jmp ExitInt9
+
+k_PlusGray:
+ jmp ExitInt9
+
+k_End1:
+ jmp ExitInt9
+
+k_Down2:
+ or bptr [Array8KeyLine+dat],1	;Caps shift
+ or bptr [Array8KeyLine+dat+4],16
+ jmp ExitInt9
+
+k_PageDown3:
+ jmp ExitInt9
+
+k_Ins0:
+ jmp ExitInt9
+
+k_DelPoint:
+ jmp ExitInt9
