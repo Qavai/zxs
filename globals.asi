@@ -39,64 +39,64 @@ getadr_i macro
 endm
 
 Z80Registers    struc   ;-----------------------------------------------------
- rAF    label word      ;�
+ rAF    label word      ;
  rA     label byte
-        db ?
+        db 
  rF     label byte
-        db ?
+        db 
 
- rBC    label word      ;�
+ rBC    label word      ;
  rC     label byte
-        db ?
+        db 
  rB     label byte
-        db ?
+        db 
 
- rHL    label word      ;�
+ rHL    label word      ;
  rL     label byte
-        db ?
+        db 
  rH     label byte
-        db ?
+        db 
 
- rPC    dw      ?       ;�
- rSP    dw      ?       ;�
+ rPC    dw             ;
+ rSP    dw             ;
 
- rIR    label word      ;�
+ rIR    label word      ;
  rR     label byte
-        db ?
+        db 
  rI     label byte
-        db ?
+        db 
 
- rDE    label word      ;�
+ rDE    label word      ;
  rE     label byte
-        db ?
+        db 
  rD     label byte
-        db ?
+        db 
 
- rBC_   dw      ?       ;�
- rDE_   dw      ?       ;�
- rHL_   dw      ?       ;�
- rAF_   dw      ?       ;�      ;Альтернативные
+ rBC_   dw             ;
+ rDE_   dw             ;
+ rHL_   dw             ;
+ rAF_   dw             ;      ;Альтернативные
 
- rIY    label word      ;�
+ rIY    label word      ;
  rYL    label byte
-        db ?
+        db 
  rYH    label byte
-        db ?
+        db 
 
- rIX    label word      ;�
+ rIX    label word      ;
  rXL    label byte
-        db ?
+        db 
  rXH    label byte
-        db ?
+        db 
 Z80Registers    ends    ;-----------------------------------------------------
 
 DataVar struc
- Z80regs Z80Registers <?>	;�
- fINT   db ?			;� Состояние прерываний INT (0-запрещено,1-р.)
- fINT_  db ?			;� Прежнее состояние INT (нужно для NMI)
- fIM    db ?			;� IM0,IM1,IM2 - режим прерываний INT
- fHALT	db ?			;� 1-HALT работает,0-не работает
- pfeo   db ?			;� Текущее выходное значение порта 254
+ Z80regs Z80Registers <>	;
+ fINT   db 			; Состояние прерываний INT (0-запрещено,1-р.)
+ fINT_  db 			; Прежнее состояние INT (нужно для NMI)
+ fIM    db 			; IM0,IM1,IM2 - режим прерываний INT
+ fHALT	db 			; 1-HALT работает,0-не работает
+ pfeo   db 			; Текущее выходное значение порта 254
 DataVar ends
 
 fl0_tag	record IntGo:1,FlashOn:1
@@ -109,7 +109,7 @@ bit_i macro numb1:req
  or ah,10h		;;H=1
  test bptr [bx],1 shl numb1
  jnz DoNewCommand
- or ah,40h		;;Z=1; Возможно P=1, а если=1, то P=0. (;?)
+ or ah,40h		;;Z=1; Возможно P=1, а если=1, то P=0. (;)
  jmp DoNewCommand
 endm
 
@@ -179,7 +179,7 @@ bit_reg macro numb1:req,reg:req
  or ah,10h		;;H=1
  test bptr [bp.&reg&],1 shl numb1
  jnz DoNewCommand
- or ah,40h		;;Z=1; Возможно P=1, а если=1, то P=0. (;?)
+ or ah,40h		;;Z=1; Возможно P=1, а если=1, то P=0. (;)
  jmp DoNewCommand
 endm
 
@@ -190,7 +190,7 @@ bit_hl macro numb1:req
  tact 12
  test bptr [bx],1 shl numb1
  jnz DoNewCommand
- or ah,40h		;;Z=1; Возможно P=1, а если=1, то P=0. (;?)
+ or ah,40h		;;Z=1; Возможно P=1, а если=1, то P=0. (;)
  jmp DoNewCommand
 endm
 
@@ -200,7 +200,7 @@ bit_a macro numb1:req
  or ah,10h		;;H=1
  test al,1 shl numb1
  jnz DoNewCommand
- or ah,40h		;;Z=1; Возможно P=1, а если=1, то P=0. (;?)
+ or ah,40h		;;Z=1; Возможно P=1, а если=1, то P=0. (;)
  jmp DoNewCommand
 endm
 
