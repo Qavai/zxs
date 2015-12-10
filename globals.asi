@@ -1,4 +1,4 @@
-;Общие определения, макросы...
+;╨Ю╨▒╤Й╨╕╨╡ ╨╛╨┐╤А╨╡╨┤╨╡╨╗╨╡╨╜╨╕╤П, ╨╝╨░╨║╤А╨╛╤Б╤Л...
 
 ofs             equ offset
 bptr            equ byte ptr
@@ -13,7 +13,7 @@ local Next
 Next:
 endm
 
-LenStack        = 528           ;Байт (ещё менять в ключах LINKa)
+LenStack        = 528           ;╨С╨░╨╣╤В (╨╡╤Й╤С ╨╝╨╡╨╜╤П╤В╤М ╨▓ ╨║╨╗╤О╤З╨░╤Е LINKa)
 TypeCpu         = 5             ;3-386, 4-486, 5-Pentium
 
 global	DoNewCommand:near
@@ -75,7 +75,7 @@ Z80Registers    struc   ;-----------------------------------------------------
  rBC_   dw      ?       ;■
  rDE_   dw      ?       ;■
  rHL_   dw      ?       ;■
- rAF_   dw      ?       ;■      ;Альтернативные
+ rAF_   dw      ?       ;■      ;╨Р╨╗╤М╤В╨╡╤А╨╜╨░╤В╨╕╨▓╨╜╤Л╨╡
 
  rIY    label word      ;■
  rYL    label byte
@@ -92,24 +92,24 @@ Z80Registers    ends    ;-----------------------------------------------------
 
 DataVar struc
  Z80regs Z80Registers <?>	;■
- fINT   db ?			;■ Состояние прерываний INT (0-запрещено,1-р.)
- fINT_  db ?			;■ Прежнее состояние INT (нужно для NMI)
- fIM    db ?			;■ IM0,IM1,IM2 - режим прерываний INT
- fHALT	db ?			;■ 1-HALT работает,0-не работает
- pfeo   db ?			;■ Текущее выходное значение порта 254
+ fINT   db ?			;■ ╨б╨╛╤Б╤В╨╛╤П╨╜╨╕╨╡ ╨┐╤А╨╡╤А╤Л╨▓╨░╨╜╨╕╨╣ INT (0-╨╖╨░╨┐╤А╨╡╤Й╨╡╨╜╨╛,1-╤А.)
+ fINT_  db ?			;■ ╨Я╤А╨╡╨╢╨╜╨╡╨╡ ╤Б╨╛╤Б╤В╨╛╤П╨╜╨╕╨╡ INT (╨╜╤Г╨╢╨╜╨╛ ╨┤╨╗╤П NMI)
+ fIM    db ?			;■ IM0,IM1,IM2 - ╤А╨╡╨╢╨╕╨╝ ╨┐╤А╨╡╤А╤Л╨▓╨░╨╜╨╕╨╣ INT
+ fHALT	db ?			;■ 1-HALT ╤А╨░╨▒╨╛╤В╨░╨╡╤В,0-╨╜╨╡ ╤А╨░╨▒╨╛╤В╨░╨╡╤В
+ pfeo   db ?			;■ ╨в╨╡╨║╤Г╤Й╨╡╨╡ ╨▓╤Л╤Е╨╛╨┤╨╜╨╛╨╡ ╨╖╨╜╨░╤З╨╡╨╜╨╕╨╡ ╨┐╨╛╤А╤В╨░ 254
 DataVar ends
 
 fl0_tag	record IntGo:1,FlashOn:1
 flags	record fS:1,fZ:1,f5:1,fH:1,f3:1,fPV:1,fN:1,fC:1
 
-;Команды BIT,RES,SET для индексной адресации (IX+byte),(IY+byte)
-;Для набора DD_CB и FD_CB
+;╨Ъ╨╛╨╝╨░╨╜╨┤╤Л BIT,RES,SET ╨┤╨╗╤П ╨╕╨╜╨┤╨╡╨║╤Б╨╜╨╛╨╣ ╨░╨┤╤А╨╡╤Б╨░╤Ж╨╕╨╕ (IX+byte),(IY+byte)
+;╨Ф╨╗╤П ╨╜╨░╨▒╨╛╤А╨░ DD_CB ╨╕ FD_CB
 bit_i macro numb1:req
- and ah,3Dh		;;Подготовка для ветви "Бит равен 1" Z=0,S=0,N=0,P-,C-
+ and ah,3Dh		;;╨Я╨╛╨┤╨│╨╛╤В╨╛╨▓╨║╨░ ╨┤╨╗╤П ╨▓╨╡╤В╨▓╨╕ "╨С╨╕╤В ╤А╨░╨▓╨╡╨╜ 1" Z=0,S=0,N=0,P-,C-
  or ah,10h		;;H=1
  test bptr [bx],1 shl numb1
  jnz DoNewCommand
- or ah,40h		;;Z=1; Возможно P=1, а если=1, то P=0. (;?)
+ or ah,40h		;;Z=1; ╨Т╨╛╨╖╨╝╨╛╨╢╨╜╨╛ P=1, ╨░ ╨╡╤Б╨╗╨╕=1, ╤В╨╛ P=0. (;?)
  jmp DoNewCommand
 endm
 
@@ -171,36 +171,36 @@ set_i_a macro numb1:req
  jmp DoNewCommand
 endm
 
-;Команды BIT,RES,SET
-;Для набора CB
+;╨Ъ╨╛╨╝╨░╨╜╨┤╤Л BIT,RES,SET
+;╨Ф╨╗╤П ╨╜╨░╨▒╨╛╤А╨░ CB
 bit_reg macro numb1:req,reg:req
- and ah,3Dh		;;Подготовка для ветви "Бит равен 1" Z=0,S=0,N=0,P-,C-
+ and ah,3Dh		;;╨Я╨╛╨┤╨│╨╛╤В╨╛╨▓╨║╨░ ╨┤╨╗╤П ╨▓╨╡╤В╨▓╨╕ "╨С╨╕╤В ╤А╨░╨▓╨╡╨╜ 1" Z=0,S=0,N=0,P-,C-
  tact 8
  or ah,10h		;;H=1
  test bptr [bp.&reg&],1 shl numb1
  jnz DoNewCommand
- or ah,40h		;;Z=1; Возможно P=1, а если=1, то P=0. (;?)
+ or ah,40h		;;Z=1; ╨Т╨╛╨╖╨╝╨╛╨╢╨╜╨╛ P=1, ╨░ ╨╡╤Б╨╗╨╕=1, ╤В╨╛ P=0. (;?)
  jmp DoNewCommand
 endm
 
 bit_hl macro numb1:req
- and ah,3Dh		;;Подготовка для ветви "Бит равен 1" Z=0,S=0,N=0,P-,C-
+ and ah,3Dh		;;╨Я╨╛╨┤╨│╨╛╤В╨╛╨▓╨║╨░ ╨┤╨╗╤П ╨▓╨╡╤В╨▓╨╕ "╨С╨╕╤В ╤А╨░╨▓╨╡╨╜ 1" Z=0,S=0,N=0,P-,C-
  mov bx,[bp.rHL]
  or ah,10h		;;H=1
  tact 12
  test bptr [bx],1 shl numb1
  jnz DoNewCommand
- or ah,40h		;;Z=1; Возможно P=1, а если=1, то P=0. (;?)
+ or ah,40h		;;Z=1; ╨Т╨╛╨╖╨╝╨╛╨╢╨╜╨╛ P=1, ╨░ ╨╡╤Б╨╗╨╕=1, ╤В╨╛ P=0. (;?)
  jmp DoNewCommand
 endm
 
 bit_a macro numb1:req
- and ah,3Dh		;;Подготовка для ветви "Бит равен 1" Z=0,S=0,N=0,P-,C-
+ and ah,3Dh		;;╨Я╨╛╨┤╨│╨╛╤В╨╛╨▓╨║╨░ ╨┤╨╗╤П ╨▓╨╡╤В╨▓╨╕ "╨С╨╕╤В ╤А╨░╨▓╨╡╨╜ 1" Z=0,S=0,N=0,P-,C-
  tact 8
  or ah,10h		;;H=1
  test al,1 shl numb1
  jnz DoNewCommand
- or ah,40h		;;Z=1; Возможно P=1, а если=1, то P=0. (;?)
+ or ah,40h		;;Z=1; ╨Т╨╛╨╖╨╝╨╛╨╢╨╜╨╛ P=1, ╨░ ╨╡╤Б╨╗╨╕=1, ╤В╨╛ P=0. (;?)
  jmp DoNewCommand
 endm
 

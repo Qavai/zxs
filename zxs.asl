@@ -1,4 +1,4 @@
-;Имитатор Спектрум-48. Иванов Евгений,8.8.1998 <<SUPER>> @
+;╨Ш╨╝╨╕╤В╨░╤В╨╛╤А ╨б╨┐╨╡╨║╤В╤А╤Г╨╝-48. ╨Ш╨▓╨░╨╜╨╛╨▓ ╨Х╨▓╨│╨╡╨╜╨╕╨╣,8.8.1998 <<SUPER>> @
 VERSION T310
 SMART
 locals
@@ -64,13 +64,13 @@ endif
  int 33
  jc ErrMemory
 
- mov ax,3D00h		;Открываю ZXS.DAT
+ mov ax,3D00h		;╨Ю╤В╨║╤А╤Л╨▓╨░╤О ZXS.DAT
  lea dx,NameDatFile
  int 33
  jc ErrDatFile
  mov [bp.hFileDat],ax
 
- mov ax,3D00h		;Открываю Tap-файл
+ mov ax,3D00h		;╨Ю╤В╨║╤А╤Л╨▓╨░╤О Tap-╤Д╨░╨╣╨╗
  lea dx,NameTapFile+dat
  int 33
  jc ErrTapFile
@@ -84,7 +84,7 @@ endif
 
  push ds
  mov ds,ax
- mov ah,3Fh		;Загрузка ПЗУ 16Кб и экран 6912 байт (заставка)
+ mov ah,3Fh		;╨Ч╨░╨│╤А╤Г╨╖╨║╨░ ╨Я╨Ч╨г 16╨Ъ╨▒ ╨╕ ╤Н╨║╤А╨░╨╜ 6912 ╨▒╨░╨╣╤В (╨╖╨░╤Б╤В╨░╨▓╨║╨░)
  mov cx,16384+6912
  mov bx,[bp.hFileDat]
  sub dx,dx
@@ -120,7 +120,7 @@ endif
  in al,61h
  mov [bp.OldPort61h],al
 
- mov dx,3daH		;Цвет границы
+ mov dx,3daH		;╨ж╨▓╨╡╤В ╨│╤А╨░╨╜╨╕╤Ж╤Л
  in al,dx
  jmp $+2
  mov dl,0c0h
@@ -130,11 +130,11 @@ endif
  mov al,16
  out dx,al
 
- mov al,11111101b	;Только клавиатура работает
+ mov al,11111101b	;╨в╨╛╨╗╤М╨║╨╛ ╨║╨╗╨░╨▓╨╕╨░╤В╤Г╤А╨░ ╤А╨░╨▒╨╛╤В╨░╨╡╤В
  out 21h,al
 
- mov al,[bp.OldPort61h]	;Включаю управление звуком через 1 бит
- and al,not 3		;Обнуляю 1 бит
+ mov al,[bp.OldPort61h]	;╨Т╨║╨╗╤О╤З╨░╤О ╤Г╨┐╤А╨░╨▓╨╗╨╡╨╜╨╕╨╡ ╨╖╨▓╤Г╨║╨╛╨╝ ╤З╨╡╤А╨╡╨╖ 1 ╨▒╨╕╤В
+ and al,not 3		;╨Ю╨▒╨╜╤Г╨╗╤П╤О 1 ╨▒╨╕╤В
  out 61h,al
 
  mov ax,2509h
@@ -148,7 +148,7 @@ endif
 
  push eax
  mov eax,10101010h
- xor di,di		;Подготавливаю область для вывода границы (BORDER)
+ xor di,di		;╨Я╨╛╨┤╨│╨╛╤В╨░╨▓╨╗╨╕╨▓╨░╤О ╨╛╨▒╨╗╨░╤Б╤В╤М ╨┤╨╗╤П ╨▓╤Л╨▓╨╛╨┤╨░ ╨│╤А╨░╨╜╨╕╤Ж╤Л (BORDER)
  mov cx,(4*320+32)/4
  rep stosd
  mov di,4*320+32
@@ -228,8 +228,8 @@ Vika:
  jmp Dos
 
 ;----------------------
-; Выводит строчку в CON
-; IN -> DX-адрес;
+; ╨Т╤Л╨▓╨╛╨┤╨╕╤В ╤Б╤В╤А╨╛╤З╨║╤Г ╨▓ CON
+; IN -> DX-╨░╨┤╤А╨╡╤Б;
 proc ConString
  mov ah,9
  int 33
@@ -245,29 +245,29 @@ proc DoNewCommand
 shl cx, 3	;!
  sub [bp.Tacts],cx	;? cx
  jns @@m1
- cmp [bp.LastKey],40h+128	;F6 - реальный режим
+ cmp [bp.LastKey],40h+128	;F6 - ╤А╨╡╨░╨╗╤М╨╜╤Л╨╣ ╤А╨╡╨╢╨╕╨╝
  jz @@m1
 ;=====================================================================
- add [bp.Tacts],360*8	;Вывожу очередную строчку (8 строк)
+ add [bp.Tacts],360*8	;╨Т╤Л╨▓╨╛╨╢╤Г ╨╛╤З╨╡╤А╨╡╨┤╨╜╤Г╤О ╤Б╤В╤А╨╛╤З╨║╤Г (8 ╤Б╤В╤А╨╛╨║)
  pushad
  mov di,[bp.NextAdrIn]
  push di
 
- mov si,[bp+di]		;Адрес точек
- mov bx,[bp+di+2]	;Адрес атрибутов
+ mov si,[bp+di]		;╨Р╨┤╤А╨╡╤Б ╤В╨╛╤З╨╡╨║
+ mov bx,[bp+di+2]	;╨Р╨┤╤А╨╡╤Б ╨░╤В╤А╨╕╨▒╤Г╤В╨╛╨▓
  mov di,[bp+di+4]
 
  mov cx,32
 @@z0:
  push cx
- mov dl,[bx]		;DL=атрибуты этих 8 точек: .7-FLASH,.6-BRIGHT
+ mov dl,[bx]		;DL=╨░╤В╤А╨╕╨▒╤Г╤В╤Л ╤Н╤В╨╕╤Е 8 ╤В╨╛╤З╨╡╨║: .7-FLASH,.6-BRIGHT
 			;.0...2-INK(GRB),.3...5-PAPER(GRB)
  or dl,dl
  jns @@v2
  test [bp.fl0],m FlashOn
  jz @@v2
 
- mov cl,dl		;Смена INK и PAPER
+ mov cl,dl		;╨б╨╝╨╡╨╜╨░ INK ╨╕ PAPER
  shr cl,3
  and cl,0Fh		;CL=PAPER
  and dl,7
@@ -315,7 +315,7 @@ shl cx, 3	;!
  mov [bp.fINT],0
 ;? or [bp.fl0],m IntGo
 
-;? 3 типа прерываний делать (IM)
+;? 3 ╤В╨╕╨┐╨░ ╨┐╤А╨╡╤А╤Л╨▓╨░╨╜╨╕╨╣ ╨┤╨╡╨╗╨░╤В╤М (IM)
  dec di
  mov cx,si
  test di,0C000h
@@ -336,7 +336,7 @@ shl cx, 3	;!
 @@m1:
  push ax
  mov al,[bp.LastKey]
- cmp al,3Fh+128		;F5 сброс процессора
+ cmp al,3Fh+128		;F5 ╤Б╨▒╤А╨╛╤Б ╨┐╤А╨╛╤Ж╨╡╤Б╤Б╨╛╤А╨░
  jnz m302a
  mov [bp.LastKey],0
  pop ax
@@ -344,20 +344,20 @@ shl cx, 3	;!
  jmp DoNext
 
 m302a:
- cmp al,1+128		;Esc выход в ОС
+ cmp al,1+128		;Esc ╨▓╤Л╤Е╨╛╨┤ ╨▓ ╨Ю╨б
  jz ExitImitation
- cmp al,44h+128		;F10 пауза имитации
+ cmp al,44h+128		;F10 ╨┐╨░╤Г╨╖╨░ ╨╕╨╝╨╕╤В╨░╤Ж╨╕╨╕
  jnz m312a
  pop ax
  jmp DoNewCommand
 
 m312a:
- cmp al,3Dh+128		;F3 загрузка Z80-файла
+ cmp al,3Dh+128		;F3 ╨╖╨░╨│╤А╤Г╨╖╨║╨░ Z80-╤Д╨░╨╣╨╗╨░
  jz LoadZ80
  pop ax
 
 DoNext:
- cmp si,556h		;Проверка,идёт-ли считывание с магнитофона
+ cmp si,556h		;╨Я╤А╨╛╨▓╨╡╤А╨║╨░,╨╕╨┤╤С╤В-╨╗╨╕ ╤Б╤З╨╕╤В╤Л╨▓╨░╨╜╨╕╨╡ ╤Б ╨╝╨░╨│╨╜╨╕╤В╨╛╤Д╨╛╨╜╨░
  jz LdBytes
 
 DoContinue:
@@ -382,21 +382,21 @@ ExitImitation:
 endp
 
 ;------------------------------
-; Обеспечивает загрузку с ленты
+; ╨Ю╨▒╨╡╤Б╨┐╨╡╤З╨╕╨▓╨░╨╡╤В ╨╖╨░╨│╤А╤Г╨╖╨║╤Г ╤Б ╨╗╨╡╨╜╤В╤Л
 proc LdBytes
  pusha
  push ds es ds
  pop es
 
  mov [bp.rAF],ax
- mov ah,48h		;Выделяю память временно для загрузки файла
+ mov ah,48h		;╨Т╤Л╨┤╨╡╨╗╤П╤О ╨┐╨░╨╝╤П╤В╤М ╨▓╤А╨╡╨╝╨╡╨╜╨╜╨╛ ╨┤╨╗╤П ╨╖╨░╨│╤А╤Г╨╖╨║╨╕ ╤Д╨░╨╣╨╗╨░
  mov bx,65536/16
  int 33
  jc @@ErrMem
  mov [bp.SegBufTap],ax
  mov ds,ax
 
- mov ah,3Fh		;Tap-файл уже открыт, загружаю первые 3 байта
+ mov ah,3Fh		;Tap-╤Д╨░╨╣╨╗ ╤Г╨╢╨╡ ╨╛╤В╨║╤А╤Л╤В, ╨╖╨░╨│╤А╤Г╨╢╨░╤О ╨┐╨╡╤А╨▓╤Л╨╡ 3 ╨▒╨░╨╣╤В╨░
  mov bx,[bp.hFileTap]
  mov cx,3
  xor dx,dx
@@ -405,7 +405,7 @@ proc LdBytes
  cmp ax,3
  jnz @@ErrTap
 
- xor si,si		;Проверка длины и типа
+ xor si,si		;╨Я╤А╨╛╨▓╨╡╤А╨║╨░ ╨┤╨╗╨╕╨╜╤Л ╨╕ ╤В╨╕╨┐╨░
  lodsw
  mov cx,ax
  cmp ax,3
@@ -420,7 +420,7 @@ proc LdBytes
  jnz @@ErrTap
  mov [bp.TypeBlock],al
 
- mov ax,cx		;Загружаю данные и байт чётности
+ mov ax,cx		;╨Ч╨░╨│╤А╤Г╨╢╨░╤О ╨┤╨░╨╜╨╜╤Л╨╡ ╨╕ ╨▒╨░╨╣╤В ╤З╤С╤В╨╜╨╛╤Б╤В╨╕
  dec cx
  mov ah,3Fh
  xor dx,dx
@@ -431,7 +431,7 @@ proc LdBytes
  cmp ax,cx
  jnz @@ErrTap
 
- xor si,si		;Проверка на чётность
+ xor si,si		;╨Я╤А╨╛╨▓╨╡╤А╨║╨░ ╨╜╨░ ╤З╤С╤В╨╜╨╛╤Б╤В╤М
  mov al,[bp.TypeBlock]
 @@m1:
  xor al,[si]
@@ -444,10 +444,10 @@ proc LdBytes
  mov bx,[bp.rIX]
  xor si,si
  mov cx,[bp.LenBlock]
- test [bp.rF],1		;LOAD или VERIFY
+ test [bp.rF],1		;LOAD ╨╕╨╗╨╕ VERIFY
  jz @@Verify
 
-@@m2:			;LOAD - переписываю в память
+@@m2:			;LOAD - ╨┐╨╡╤А╨╡╨┐╨╕╤Б╤Л╨▓╨░╤О ╨▓ ╨┐╨░╨╝╤П╤В╤М
  lodsb
  test bh,0C0h
  jz @@m3
@@ -488,8 +488,8 @@ proc LdBytes
  jmp DoContinue
 endp
 ;
-;? Сделать откат на 3 байта, если ошибка
-;? Возможно, менять DE,IX,A
+;? ╨б╨┤╨╡╨╗╨░╤В╤М ╨╛╤В╨║╨░╤В ╨╜╨░ 3 ╨▒╨░╨╣╤В╨░, ╨╡╤Б╨╗╨╕ ╨╛╤И╨╕╨▒╨║╨░
+;? ╨Т╨╛╨╖╨╝╨╛╨╢╨╜╨╛, ╨╝╨╡╨╜╤П╤В╤М DE,IX,A
 ;------------------------------
 proc LoadZ80
  pop ax
@@ -501,18 +501,18 @@ proc LoadZ80
 
 endp
 ;----------------------------------
-; Возвращает в BL значение порта CX
-; IN -> CX-порт
-; OUT-> BL-значение порта
-;	BH-изменённые флаги
+; ╨Т╨╛╨╖╨▓╤А╨░╤Й╨░╨╡╤В ╨▓ BL ╨╖╨╜╨░╤З╨╡╨╜╨╕╨╡ ╨┐╨╛╤А╤В╨░ CX
+; IN -> CX-╨┐╨╛╤А╤В
+; OUT-> BL-╨╖╨╜╨░╤З╨╡╨╜╨╕╨╡ ╨┐╨╛╤А╤В╨░
+;	BH-╨╕╨╖╨╝╨╡╨╜╤С╨╜╨╜╤Л╨╡ ╤Д╨╗╨░╨│╨╕
 ;
-;  ! -> CX изменяется
+;  ! -> CX ╨╕╨╖╨╝╨╡╨╜╤П╨╡╤В╤Б╤П
 proc LdBL_portCX
- mov bl,255		;Портов нет
+ mov bl,255		;╨Я╨╛╤А╤В╨╛╨▓ ╨╜╨╡╤В
  rcr cl,1
  jc @@NoFE
 
- mov bl,1Fh		;Расчёт клавиатуры
+ mov bl,1Fh		;╨а╨░╤Б╤З╤С╤В ╨║╨╗╨░╨▓╨╕╨░╤В╤Г╤А╤Л
  shr ch,1
  jc @@m1
  and bl,[bp.Array8KeyLine]
@@ -566,11 +566,11 @@ ret
 endp
 ;----------------------------------
 ;----------------------------------
-; Посылает значение BL в порт CX
-; IN -> CX-порт
-;	BL-посылаемое значение
-; ! ->	BX изменяет
-;	CX изменяет
+; ╨Я╨╛╤Б╤Л╨╗╨░╨╡╤В ╨╖╨╜╨░╤З╨╡╨╜╨╕╨╡ BL ╨▓ ╨┐╨╛╤А╤В CX
+; IN -> CX-╨┐╨╛╤А╤В
+;	BL-╨┐╨╛╤Б╤Л╨╗╨░╨╡╨╝╨╛╨╡ ╨╖╨╜╨░╤З╨╡╨╜╨╕╨╡
+; ! ->	BX ╨╕╨╖╨╝╨╡╨╜╤П╨╡╤В
+;	CX ╨╕╨╖╨╝╨╡╨╜╤П╨╡╤В
 proc StoreBL_portCX
  rcr cl,1
  jc @@notFE
@@ -583,7 +583,7 @@ proc StoreBL_portCX
  test cl,16
  jz @@next0
 
- mov ch,bl		;Вывод звука
+ mov ch,bl		;╨Т╤Л╨▓╨╛╨┤ ╨╖╨▓╤Г╨║╨░
  in al,97
  and ch,10h
  shr ch,3
@@ -591,7 +591,7 @@ proc StoreBL_portCX
  or al,ch
  out 97,al
 
-@@next0:		;Вывод границы
+@@next0:		;╨Т╤Л╨▓╨╛╨┤ ╨│╤А╨░╨╜╨╕╤Ж╤Л
  test cl,7
  jz @@next1
 
@@ -617,7 +617,7 @@ proc StoreBL_portCX
  sti
  pop dx
 
-@@next1:		;Вывод магнитофона
+@@next1:		;╨Т╤Л╨▓╨╛╨┤ ╨╝╨░╨│╨╜╨╕╤В╨╛╤Д╨╛╨╜╨░
 ;?
 @@ret:
  pop ax
@@ -627,19 +627,19 @@ ret
 endp
 
 tColorBorder label byte	;R,G,B (0...63)
- db 0,0,0,?	;Чёрный
- db 0,0,35,?	;Синий
- db 50,0,0,?	;Красный
- db 52,0,40,?	;Пурпурный,сиреневый (Magenta)
- db 0,48,0,?	;Зелёный
- db 0,48,48,?	;Голубой (Cyan)
- db 47,47,0,?	;Жёлтый
- db 45,45,45,?	;Белый
+ db 0,0,0,?	;╨з╤С╤А╨╜╤Л╨╣
+ db 0,0,35,?	;╨б╨╕╨╜╨╕╨╣
+ db 50,0,0,?	;╨Ъ╤А╨░╤Б╨╜╤Л╨╣
+ db 52,0,40,?	;╨Я╤Г╤А╨┐╤Г╤А╨╜╤Л╨╣,╤Б╨╕╤А╨╡╨╜╨╡╨▓╤Л╨╣ (Magenta)
+ db 0,48,0,?	;╨Ч╨╡╨╗╤С╨╜╤Л╨╣
+ db 0,48,48,?	;╨У╨╛╨╗╤Г╨▒╨╛╨╣ (Cyan)
+ db 47,47,0,?	;╨Ц╤С╨╗╤В╤Л╨╣
+ db 45,45,45,?	;╨С╨╡╨╗╤Л╨╣
 
 ;----------------------------------
 
 ;---------------------
-; Сбрасывает процессор
+; ╨б╨▒╤А╨░╤Б╤Л╨▓╨░╨╡╤В ╨┐╤А╨╛╤Ж╨╡╤Б╤Б╨╛╤А
 proc ResetCPU far
  mov ax,1F1Fh
  mov wptr [bp.Array8KeyLine],ax
@@ -678,7 +678,7 @@ CodeKernel Ends
 CodeInterrupt segment para public 'ZxsCodeStart' use16
 Assume CS:CodeGroup,SS:DataWork
 ;------------------------
-; Обработчик 9 прерывания
+; ╨Ю╨▒╤А╨░╨▒╨╛╤В╤З╨╕╨║ 9 ╨┐╤А╨╡╤А╤Л╨▓╨░╨╜╨╕╤П
 proc Int9Entry
  push eax ds DataWork
  sub eax,eax
@@ -714,23 +714,23 @@ hallo	db 'Super Assembler - Copyright 1993-2000 <<SUPER>>'
 	db 'Software of 21 centure',13,10,36
 
  NameDatFile	db 'zxs.dat',0
- strErrDatFile	db 'Файл ZXS.DAT отсутствует или испорчен',13,10,36
- strErrTapFile	db 'Ошибка TAP-файла',13,10,36
- strErrZ80File	db 'Ошибка Z80-файла',13,10,36
- strErrMemory	db 'Ошибка с памятью или её мало',13,10,36
- dhelp		db 13,10,'(C) ZXS Версия 1.0 "Имитация ZX Spectrum-48K"'
- 		db ' Иванов Eвгений 1998-2000',13,10,36
+ strErrDatFile	db '╨д╨░╨╣╨╗ ZXS.DAT ╨╛╤В╤Б╤Г╤В╤Б╤В╨▓╤Г╨╡╤В ╨╕╨╗╨╕ ╨╕╤Б╨┐╨╛╤А╤З╨╡╨╜',13,10,36
+ strErrTapFile	db '╨Ю╤И╨╕╨▒╨║╨░ TAP-╤Д╨░╨╣╨╗╨░',13,10,36
+ strErrZ80File	db '╨Ю╤И╨╕╨▒╨║╨░ Z80-╤Д╨░╨╣╨╗╨░',13,10,36
+ strErrMemory	db '╨Ю╤И╨╕╨▒╨║╨░ ╤Б ╨┐╨░╨╝╤П╤В╤М╤О ╨╕╨╗╨╕ ╨╡╤С ╨╝╨░╨╗╨╛',13,10,36
+ dhelp		db 13,10,'(C) ZXS ╨Т╨╡╤А╤Б╨╕╤П 1.0 "╨Ш╨╝╨╕╤В╨░╤Ж╨╕╤П ZX Spectrum-48K"'
+ 		db ' ╨Ш╨▓╨░╨╜╨╛╨▓ E╨▓╨│╨╡╨╜╨╕╨╣ 1998-2000',13,10,36
 
-TablePalVga	db 0,0,0	;Чёрный	(Если менять, то и tColorBorder тоже!)
-		db 0,0,35	;Синий
-		db 50,0,0	;Красный
-		db 52,0,40	;Пурпурный,сиреневый (Magenta)
-		db 0,48,0	;Зелёный
-		db 0,48,48	;Голубой (Cyan)
-		db 47,47,0	;Жёлтый
-		db 45,45,45	;Белый
+TablePalVga	db 0,0,0	;╨з╤С╤А╨╜╤Л╨╣	(╨Х╤Б╨╗╨╕ ╨╝╨╡╨╜╤П╤В╤М, ╤В╨╛ ╨╕ tColorBorder ╤В╨╛╨╢╨╡!)
+		db 0,0,35	;╨б╨╕╨╜╨╕╨╣
+		db 50,0,0	;╨Ъ╤А╨░╤Б╨╜╤Л╨╣
+		db 52,0,40	;╨Я╤Г╤А╨┐╤Г╤А╨╜╤Л╨╣,╤Б╨╕╤А╨╡╨╜╨╡╨▓╤Л╨╣ (Magenta)
+		db 0,48,0	;╨Ч╨╡╨╗╤С╨╜╤Л╨╣
+		db 0,48,48	;╨У╨╛╨╗╤Г╨▒╨╛╨╣ (Cyan)
+		db 47,47,0	;╨Ц╤С╨╗╤В╤Л╨╣
+		db 45,45,45	;╨С╨╡╨╗╤Л╨╣
 		db 0,0,0
-		db 0,0,43	;Яркие вышеописанные цвета
+		db 0,0,43	;╨п╤А╨║╨╕╨╡ ╨▓╤Л╤И╨╡╨╛╨┐╨╕╤Б╨░╨╜╨╜╤Л╨╡ ╤Ж╨▓╨╡╤В╨░
 		db 60,0,0
 		db 63,0,55
 		db 0,60,0
@@ -738,7 +738,7 @@ TablePalVga	db 0,0,0	;Чёрный	(Если менять, то и tColorBorder тоже!)
 		db 63,63,0
 		db 63,63,63
 
-		db 0,0,0	;Граница
+		db 0,0,0	;╨У╤А╨░╨╜╨╕╤Ж╨░
 DataStart Ends
 ;----------------------------------------------------------------------------
 DataOfs segment para public 'ZxsDataStart' use16
@@ -753,7 +753,7 @@ DataOfs Ends
 DataWork segment para public uninit 'ZxsDataStart' use16
 NOWARN UNI
  tAdrsIn        = wptr ($-dat)
- include zxs_adrs.asi		;Адреса начала строчек точек и атрибутов
+ include zxs_adrs.asi		;╨Р╨┤╤А╨╡╤Б╨░ ╨╜╨░╤З╨░╨╗╨░ ╤Б╤В╤А╨╛╤З╨╡╨║ ╤В╨╛╤З╨╡╨║ ╨╕ ╨░╤В╤А╨╕╨▒╤Г╤В╨╛╨▓
  tAdrsInEnd     = wptr ($-dat)
  NameTapFile	= bptr ($-dat)
  		db 'zxs.tap',0
@@ -761,17 +761,17 @@ NOWARN UNI
  		db 'zxs.z80',0
 StartBss label byte
  Tacts          = wptr ($-dat)
- 		dw ?		;Количество тактов до вывода линии
+ 		dw ?		;╨Ъ╨╛╨╗╨╕╤З╨╡╤Б╤В╨▓╨╛ ╤В╨░╨║╤В╨╛╨▓ ╨┤╨╛ ╨▓╤Л╨▓╨╛╨┤╨░ ╨╗╨╕╨╜╨╕╨╕
  NextAdrIn	= wptr ($-dat)
-                dw ?		;Адрес вывода (смещение)
+                dw ?		;╨Р╨┤╤А╨╡╤Б ╨▓╤Л╨▓╨╛╨┤╨░ (╤Б╨╝╨╡╤Й╨╡╨╜╨╕╨╡)
  fSecond	= bptr ($-dat)
-		db ?		;Подсчёт секунды (для FLASH)
+		db ?		;╨Я╨╛╨┤╤Б╤З╤С╤В ╤Б╨╡╨║╤Г╨╜╨┤╤Л (╨┤╨╗╤П FLASH)
  Array8KeyLine	= bptr ($-dat)
- 		db 8 dup(?)	;"8 линий адресов от клавиатуры"
+ 		db 8 dup(?)	;"8 ╨╗╨╕╨╜╨╕╨╣ ╨░╨┤╤А╨╡╤Б╨╛╨▓ ╨╛╤В ╨║╨╗╨░╨▓╨╕╨░╤В╤Г╤А╤Л"
  fl0		= bptr ($-dat)
-                db ?		;Флажки
+                db ?		;╨д╨╗╨░╨╢╨║╨╕
  LastKey        = bptr ($-dat)
- 		db ?		;Scan-код последней клавиши
+ 		db ?		;Scan-╨║╨╛╨┤ ╨┐╨╛╤Б╨╗╨╡╨┤╨╜╨╡╨╣ ╨║╨╗╨░╨▓╨╕╤И╨╕
 
 dat label unknown
 WARN UNI
@@ -793,20 +793,20 @@ WARN UNI
  SegPSP         = wptr ($-dat)
  		dw ?
  hFileDat       = wptr ($-dat)
- 		dw ?		;Номер открытого файла "zxs.dat"
+ 		dw ?		;╨Э╨╛╨╝╨╡╤А ╨╛╤В╨║╤А╤Л╤В╨╛╨│╨╛ ╤Д╨░╨╣╨╗╨░ "zxs.dat"
 
 ; KeysPress      = bptr ($-dat)
 ; 		db 128 dup(?)
  SegBufTap	= wptr ($-dat)
-		dw ?		;Сегмент буфера для работы с TAP-файлом
+		dw ?		;╨б╨╡╨│╨╝╨╡╨╜╤В ╨▒╤Г╤Д╨╡╤А╨░ ╨┤╨╗╤П ╤А╨░╨▒╨╛╤В╤Л ╤Б TAP-╤Д╨░╨╣╨╗╨╛╨╝
  hFileTap	= wptr ($-dat)
 		dw ?
  hFileZ80	= wptr ($-dat)
 		dw ?
  LenBlock	= wptr ($-dat)
- 		dw ?		;Длина считываемого блока
+ 		dw ?		;╨Ф╨╗╨╕╨╜╨░ ╤Б╤З╨╕╤В╤Л╨▓╨░╨╡╨╝╨╛╨│╨╛ ╨▒╨╗╨╛╨║╨░
  TypeBlock	= bptr ($-dat)
- 		db ?		;Тип считываемого блока
+ 		db ?		;╨в╨╕╨┐ ╤Б╤З╨╕╤В╤Л╨▓╨░╨╡╨╝╨╛╨│╨╛ ╨▒╨╗╨╛╨║╨░
 
 EndBss	label byte
 LenBss	= $-StartBss
@@ -816,20 +816,20 @@ StackStart segment para stack 'ZxsStackStart' use16
 
  db LenStack dup(?)
 
-errif LenStack MOD 16 NE 0 "Размер стека надо кратно 16"
+errif LenStack MOD 16 NE 0 "╨а╨░╨╖╨╝╨╡╤А ╤Б╤В╨╡╨║╨░ ╨╜╨░╨┤╨╛ ╨║╤А╨░╤В╨╜╨╛ 16"
 StackStart Ends
 ;----------------------------------------------------------------------------
 End start
 
---------------------- Описание формата файла "zxs.dat" --------------------
-Смещение   Длина   Что расположено
+--------------------- ╨Ю╨┐╨╕╤Б╨░╨╜╨╕╨╡ ╤Д╨╛╤А╨╝╨░╤В╨░ ╤Д╨░╨╣╨╗╨░ "zxs.dat" --------------------
+╨б╨╝╨╡╤Й╨╡╨╜╨╕╨╡   ╨Ф╨╗╨╕╨╜╨░   ╨з╤В╨╛ ╤А╨░╤Б╨┐╨╛╨╗╨╛╨╢╨╡╨╜╨╛
 ---------------------------------------------------------------------------
-      0h   4000h   ПЗУ-48 Spectrum 
-   4000h   1B00h   Заставка имитатора
+      0h   4000h   ╨Я╨Ч╨г-48 Spectrum 
+   4000h   1B00h   ╨Ч╨░╤Б╤В╨░╨▓╨║╨░ ╨╕╨╝╨╕╤В╨░╤В╨╛╤А╨░
 ---------------------------------------------------------------------------
 
- fl0	IntGo	- идёт прерывание INT
-	FlashOn - смена INK и PAPER
+ fl0	IntGo	- ╨╕╨┤╤С╤В ╨┐╤А╨╡╤А╤Л╨▓╨░╨╜╨╕╨╡ INT
+	FlashOn - ╤Б╨╝╨╡╨╜╨░ INK ╨╕ PAPER
 
 *******************************************************************************
 

@@ -1,4 +1,4 @@
-;Таблицы команд. После DD (регистр IX)
+;╨в╨░╨▒╨╗╨╕╤Ж╤Л ╨║╨╛╨╝╨░╨╜╨┤. ╨Я╨╛╤Б╨╗╨╡ DD (╤А╨╡╨│╨╕╤Б╤В╤А IX)
 P586
 VERSION T310
 
@@ -7,7 +7,7 @@ include globals.asi
 CodeKernel segment para public 'ZxsCodeKernel' use16
 Assume CS:CodeKernel, DS:nothing
 
-;DD_0...DD_8 - как основной набор (дальше писать это не буду)
+;DD_0...DD_8 - ╨║╨░╨║ ╨╛╤Б╨╜╨╛╨▓╨╜╨╛╨╣ ╨╜╨░╨▒╨╛╤А (╨┤╨░╨╗╤М╤И╨╡ ╨┐╨╕╤Б╨░╤В╤М ╤Н╤В╨╛ ╨╜╨╡ ╨▒╤Г╨┤╤Г)
 
 nDD_9:          ;ADD IX,BC
  mov bx,[bp.rBC]
@@ -58,7 +58,7 @@ nDD_23:          ;INC IX
  tact 6
  endc
 
-nDD_24:           ;INC XH ;старший байт IX.
+nDD_24:           ;INC XH ;╤Б╤В╨░╤А╤И╨╕╨╣ ╨▒╨░╨╣╤В IX.
  sahf
  inc [bp.rXH]
  tact 4
@@ -628,7 +628,7 @@ nDD_be1:
  or ah,6
  endc nDD_be,'E'
 
-nDD_CB:          ;DD CB d1 d2 , где d1-смещение(IX+d1),d2-код команды
+nDD_CB:          ;DD CB d1 d2 , ╨│╨┤╨╡ d1-╤Б╨╝╨╡╤Й╨╡╨╜╨╕╨╡(IX+d1),d2-╨║╨╛╨┤ ╨║╨╛╨╝╨░╨╜╨┤╤Л
  movsx bx,bptr [si]
  mov cl,[si+1]
  sub ch,ch

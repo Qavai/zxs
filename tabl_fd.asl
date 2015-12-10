@@ -1,4 +1,4 @@
-;Таблицы команд. После FD (регистр IY)
+;╨в╨░╨▒╨╗╨╕╤Ж╤Л ╨║╨╛╨╝╨░╨╜╨┤. ╨Я╨╛╤Б╨╗╨╡ FD (╤А╨╡╨│╨╕╤Б╤В╤А IY)
 P586
 VERSION T310
 
@@ -50,7 +50,7 @@ nFD_23:          ;INC IY
  inc [bp.rIY]
  endc ndd23,'3'
 
-nFD_24:           ;INC YH ;старший байт IY.
+nFD_24:           ;INC YH ;╤Б╤В╨░╤А╤И╨╕╨╣ ╨▒╨░╨╣╤В IY.
  sahf
  inc [bp.rYH]
  lahf
@@ -619,7 +619,7 @@ nFD_be1:
  or ah,6
  endc nFD_be,'E'
 
-nFD_CB:          ;DD CB d1 d2 , где d1-смещение(IY+d1),d2-код команды
+nFD_CB:          ;DD CB d1 d2 , ╨│╨┤╨╡ d1-╤Б╨╝╨╡╤Й╨╡╨╜╨╕╨╡(IY+d1),d2-╨║╨╛╨┤ ╨║╨╛╨╝╨░╨╜╨┤╤Л
  movsx bx,bptr [si]
  mov cl,[si+1]
  sub ch,ch

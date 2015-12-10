@@ -1,4 +1,4 @@
-;���������
+;Клавиатура
 
 tKeysJump label word
  dw kNULL
@@ -129,7 +129,7 @@ tKeysJump label word
  dw kNULL
  dw kNULL
  dw kNULL
-			;�⦠⨥
+			;Отжатие
  dw kNULL	;80h
  dw k_Esc
  dw k_1
@@ -584,7 +584,7 @@ kIns0:
 kDelPoint:
  jmp ExitInt9
 
-			;�⦠⨥
+			;Отжатие
 k_Esc:
  jmp ExitInt9
 

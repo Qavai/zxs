@@ -1,4 +1,4 @@
-;Таблицы команд. Обычная (главная)
+;╨в╨░╨▒╨╗╨╕╤Ж╤Л ╨║╨╛╨╝╨░╨╜╨┤. ╨Ю╨▒╤Л╤З╨╜╨░╤П (╨│╨╗╨░╨▓╨╜╨░╤П)
 P586
 VERSION T310
 
@@ -1767,7 +1767,7 @@ nCA:           ;JP Z,address
  tact 10
  endc nca,'A'
 
-nCB:           ;После CB
+nCB:           ;╨Я╨╛╤Б╨╗╨╡ CB
  inc dl
 ;! r
  mov bl,[si]
@@ -1957,7 +1957,7 @@ nDC:		;CALL C,address
  tact 10
  endc ndc,'C'
 
-nDD:           ;После DD
+nDD:           ;╨Я╨╛╤Б╨╗╨╡ DD
  inc dl
 ;? r
 ; sub wptr [bp+Tacts],4
@@ -2118,7 +2118,7 @@ nEC:		;CALL PE,address
  tact 10
  endc nec,'C'
 
-nED:		;После ED
+nED:		;╨Я╨╛╤Б╨╗╨╡ ED
  inc dl
 ;! r
  mov bl,[si]
@@ -2253,7 +2253,7 @@ nFC:      ;CALL M,address
  tact 10
  endc nFc,'C'
 
-nFD:           ;После FD
+nFD:           ;╨Я╨╛╤Б╨╗╨╡ FD
  inc dl
 ;? r
 ; sub wptr [bp.Tacts],4

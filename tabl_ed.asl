@@ -1,4 +1,4 @@
-;í†°´®ÊÎ ™Æ¨†≠§. èÆ·´• ED
+;–¢–∞–±–ª–∏—Ü—ã –∫–æ–º–∞–Ω–¥. –ü–æ—Å–ª–µ ED
 P586
 VERSION T310
 
@@ -7,7 +7,7 @@ include globals.asi
 CodeKernel segment para public 'ZxsCodeKernel' use16
 Assume CS:CodeKernel, DS:nothing
 
-;ED_0...ED_3F - Ø„·‚ÎË™® (NOP)(§†´ÏË• ‚Æ¶•)
+;ED_0...ED_3F - –ø—É—Å—Ç—ã—à–∫–∏ (NOP)(–¥–∞–ª—å—à–µ —Ç–æ–∂–µ)
 
 nED_0:			;NOP
  tact 8
@@ -75,7 +75,7 @@ nED_45:			;RETN
 ;? mov bl,[bp.fINT_]
  mov cl,[di]
  mov ch,[di+1]
-; mov [bp.fINT],bl	;ÇÆ··‚†≠†¢´®¢†Ó Ø‡•¶≠•• INT
+; mov [bp.fINT],bl	;–í–æ—Å—Å—Ç–∞–Ω–∞–≤–ª–∏–≤–∞—é –ø—Ä–µ–∂–Ω–µ–µ INT
  add di,2
  mov si,cx
  tact 4+10
@@ -83,7 +83,7 @@ nED_45:			;RETN
 
 nED_46:			;IM 0
  mov [bp.fIM],0
- tact 8			;4 ‚†™‚† - Ø‡•‰®™· ED + 4 ‚†™‚† - ™Æ¨†≠§†
+ tact 8			;4 —Ç–∞–∫—Ç–∞ - –ø—Ä–µ—Ñ–∏–∫—Å ED + 4 —Ç–∞–∫—Ç–∞ - –∫–æ–º–∞–Ω–¥–∞
  endc
 
 nED_47:			;LD I,A
@@ -217,7 +217,7 @@ nED_57:                  ;LD A,I
 ; and al,028h
 ; or ah,al
 ; mov al,[bp.fINT]
-; shl al,2		;?åÆ¶•‚ ·‡†ß„ Ø®·†‚Ï ¢ INT 4-™„
+; shl al,2		;?–ú–æ–∂–µ—Ç —Å—Ä–∞–∑—É –ø–∏—Å–∞—Ç—å –≤ INT 4-–∫—É
 ; or ah,al
 ; mov al,dh
 tact 9
@@ -411,8 +411,8 @@ ned6f_0:
  tact 18
 endc
 
-nED_70:			;IN (C) å•≠Ô•‚ ‰´†£®, ≠Æ ≠®™„§† ≠• ß†≠Æ·®‚
- mov cx,[bp.rBC]	;	·Á®‚†≠≠Æ• ß≠†Á•≠®•
+nED_70:			;IN (C) –ú–µ–Ω—è–µ—Ç —Ñ–ª–∞–≥–∏, –Ω–æ –Ω–∏–∫—É–¥–∞ –Ω–µ –∑–∞–Ω–æ—Å–∏—Ç
+ mov cx,[bp.rBC]	;	—Å—á–∏—Ç–∞–Ω–Ω–æ–µ –∑–Ω–∞—á–µ–Ω–∏–µ
  call LdBL_portCX
  mov ah,bh
  tact 12
@@ -624,7 +624,7 @@ nED_AB:			;OUTD
  endc
 
 nED_B0:			;LDIR
-;ì·™Æ‡•≠≠Î© ¢†‡®†≠‚
+;–£—Å–∫–æ—Ä–µ–Ω–Ω—ã–π –≤–∞—Ä–∏–∞–Ω—Ç
  mov [bp.rA],al
  mov bx,[bp.rDE]
  mov cx,[bp.rHL]
@@ -646,7 +646,7 @@ ned2:
  endc
 
 if 0
-;ë‚†≠§†‡‚≠Î© ¢†‡®†≠‚
+;–°—Ç–∞–Ω–¥–∞—Ä—Ç–Ω—ã–π –≤–∞—Ä–∏–∞–Ω—Ç
  mov bx,[bp.rHL]
  mov ch,[bx]
  inc [bp.rHL]
@@ -739,7 +739,7 @@ nedb31:
  endc
 
 nED_B8:			;LDDR
-;ì·™Æ‡•≠≠Î© ¢†‡®†≠‚
+;–£—Å–∫–æ—Ä–µ–Ω–Ω—ã–π –≤–∞—Ä–∏–∞–Ω—Ç
  mov [bp.rA],al
  mov bx,[bp.rDE]
  mov cx,[bp.rHL]
@@ -761,7 +761,7 @@ nedb82:
  endc
 
 if 0
-;ë‚†≠§†‡‚≠Î© ¢†‡®†≠‚
+;–°—Ç–∞–Ω–¥–∞—Ä—Ç–Ω—ã–π –≤–∞—Ä–∏–∞–Ω—Ç
  mov bx,[bp.rHL]
  mov ch,[bx]
  dec [bp.rHL]

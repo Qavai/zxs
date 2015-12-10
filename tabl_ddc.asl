@@ -1,4 +1,4 @@
-;Таблицы команд. После DD CB
+;╨в╨░╨▒╨╗╨╕╤Ж╤Л ╨║╨╛╨╝╨░╨╜╨┤. ╨Я╨╛╤Б╨╗╨╡ DD CB
 P586
 VERSION T310
 
@@ -7,8 +7,8 @@ include globals.asi
 CodeKernel segment para public 'ZxsCodeKernel' use16
 Assume CS:CodeKernel, DS:nothing
 
-;Набор после DD CB
-;В BX находится вычисленный адрес (IX+смещение)
+;╨Э╨░╨▒╨╛╤А ╨┐╨╛╤Б╨╗╨╡ DD CB
+;╨Т BX ╨╜╨░╤Е╨╛╨┤╨╕╤В╤Б╤П ╨▓╤Л╤З╨╕╤Б╨╗╨╡╨╜╨╜╤Л╨╣ ╨░╨┤╤А╨╡╤Б (IX+╤Б╨╝╨╡╤Й╨╡╨╜╨╕╨╡)
 
 nDD_CB_0:	;RLC (IX+byte),B
  mov cl,[bx]
